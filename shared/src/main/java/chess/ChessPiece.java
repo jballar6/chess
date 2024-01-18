@@ -1,6 +1,9 @@
 package chess;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Represents a single chess piece
@@ -9,8 +12,12 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
+    private ChessGame.TeamColor pieceColor;
+    private PieceType type;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        this.pieceColor = pieceColor;
+        this.type = type;
     }
 
     /**
@@ -47,6 +54,16 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        /*
+          Some example code from Prof Jensen, might be helpful for comparison
+        */
+//        var piece = board.getPiece(myPosition);
+//
+//        if (piece != null) {
+//            return Rules.movementRule(piece.getPieceType()).moves(board, myPosition);
+//        }
+//
+//        return new HashSet<>();
+        return new ArrayList<>();
     }
 }
