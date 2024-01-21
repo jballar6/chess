@@ -1,7 +1,5 @@
 package chess;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -12,12 +10,14 @@ import java.util.HashSet;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    private ChessGame.TeamColor pieceColor;
-    private PieceType type;
+    private final ChessGame.TeamColor pieceColor;
+    private final PieceType type;
+    private final PieceMovesCalculator movesCalculator;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
+        this.movesCalculator = createMovesCalculator(type);
     }
 
     /**
@@ -36,14 +36,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return pieceColor;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
     /**
@@ -54,16 +54,31 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        /*
-          Some example code from Prof Jensen, might be helpful for comparison
-        */
-//        var piece = board.getPiece(myPosition);
-//
-//        if (piece != null) {
-//            return Rules.movementRule(piece.getPieceType()).moves(board, myPosition);
-//        }
-//
-//        return new HashSet<>();
-        return new ArrayList<>();
+        var piece = board.getPiece(myPosition);
+
+        if (piece != null) {
+            return movesCalculator.pieceMoves(board, myPosition);
+        }
+
+        return new HashSet<>();
+    }
+
+    private PieceMovesCalculator createMovesCalculator(PieceType type) {
+        switch (type) {
+            case KING:
+                throw new RuntimeException("Not implemented yet");
+            case QUEEN:
+                throw new RuntimeException("Not implemented yet");
+            case BISHOP:
+                return new BishopMovesCalculator();
+            case KNIGHT:
+                throw new RuntimeException("Not implemented yet");
+            case ROOK:
+                throw new RuntimeException("Not implemented yet");
+            case PAWN:
+                throw new RuntimeException("Not implemented yet");
+            default:
+                throw new IllegalArgumentException("Unrecognized piece type: " + type);
+        }
     }
 }
