@@ -29,8 +29,9 @@ public class ChessPiece {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessPiece that = (ChessPiece) o;
-        return pieceColor == that.pieceColor && type == that.type && Objects.equals(movesCalculator, that.movesCalculator);
+        return pieceColor == that.pieceColor && type == that.type;
     }
+//&& Objects.equals(movesCalculator, that.movesCalculator);
 
     @Override
     public int hashCode() {

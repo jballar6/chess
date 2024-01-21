@@ -18,6 +18,10 @@ public class ChessPosition {
         this.col = col;
     }
 
+    public boolean isValidPosition() {
+        return row <= 7 && row >= 0 && col <= 7 && col >= 0;
+    }
+
     @Override
     public String toString() {
         return "ChessPosition{" +

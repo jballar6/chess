@@ -27,12 +27,12 @@ public class ChessBoard {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessBoard that = (ChessBoard) o;
-        return Arrays.equals(squares, that.squares);
+        return Arrays.deepEquals(squares, that.squares);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(squares);
+        return Arrays.deepHashCode(squares);
     }
 
     /**
@@ -45,7 +45,7 @@ public class ChessBoard {
         if (position.getRow() <= 8 && position.getColumn() <= 8) {
             squares[position.getRow() - 1][position.getColumn() - 1] = piece;
         } else {
-            throw new IllegalArgumentException("Given position is out of bounds. Please try again.");
+            throw new IllegalArgumentException("Given position is out of bounds.");
         }
     }
 
@@ -57,7 +57,10 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return squares[position.getRow() - 1][position.getColumn() - 1];
+        if (position.getRow() <= 8 && position.getColumn() <= 8) {
+            return squares[position.getRow() - 1][position.getColumn() - 1];
+        }
+        return null;
     }
 
     /**
@@ -65,7 +68,7 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        squares = new ChessPiece[8][8];
+        this.squares = new ChessPiece[8][8];
 
         //White side setup
         for (int i = 0; i < 8; i++) {
