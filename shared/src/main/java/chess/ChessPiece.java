@@ -66,17 +66,17 @@ public class ChessPiece {
     private PieceMovesCalculator createMovesCalculator(PieceType type) {
         switch (type) {
             case KING:
-                throw new RuntimeException("Not implemented yet");
+                return new KingMovesCalculator();
             case QUEEN:
-                throw new RuntimeException("Not implemented yet");
+                return new QueenMovesCalculator();
             case BISHOP:
                 return new BishopMovesCalculator();
             case KNIGHT:
-                throw new RuntimeException("Not implemented yet");
+                return new KnightMovesCalculator();
             case ROOK:
-                throw new RuntimeException("Not implemented yet");
+                return new RookMovesCalculator();
             case PAWN:
-                throw new RuntimeException("Not implemented yet");
+                return new PawnMovesCalculator();
             default:
                 throw new IllegalArgumentException("Unrecognized piece type: " + type);
         }
