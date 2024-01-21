@@ -14,6 +14,15 @@ public class ChessPiece {
     private final PieceType type;
     private final PieceMovesCalculator movesCalculator;
 
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "pieceColor=" + pieceColor +
+                ", type=" + type +
+                ", movesCalculator=" + movesCalculator +
+                '}';
+    }
+
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
