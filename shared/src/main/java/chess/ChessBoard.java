@@ -12,13 +12,12 @@ public class ChessBoard {
     private ChessPiece[][] squares = new ChessPiece[8][8];
 
     public ChessBoard() {
-        resetBoard();
     }
 
     @Override
     public String toString() {
         return "ChessBoard{" +
-                "squares=" + Arrays.toString(squares) +
+                "squares=" + Arrays.deepToString(squares) +
                 '}';
     }
 
@@ -57,10 +56,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        if (position.getRow() <= 8 && position.getColumn() <= 8) {
-            return squares[position.getRow() - 1][position.getColumn() - 1];
-        }
-        return null;
+        return squares[position.getRow() - 1][position.getColumn() - 1];
     }
 
     /**
