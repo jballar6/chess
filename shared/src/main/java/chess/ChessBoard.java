@@ -56,7 +56,12 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return squares[position.getRow() - 1][position.getColumn() - 1];
+        if (position.getRow() <= 8 && position.getColumn() <= 8) {
+            return squares[position.getRow() - 1][position.getColumn() - 1];
+        } else {
+            throw new IllegalArgumentException("Given position is out of bounds.");
+
+        }
     }
 
     /**

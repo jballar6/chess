@@ -49,7 +49,6 @@ public class BishopMovesCalculator implements PieceMovesCalculator {
             if (board.getPiece(endPosition) == null) {
                 moves.add(new ChessMove(position, endPosition, null));
             } else if (board.getPiece(endPosition).getTeamColor() != myPiece.getTeamColor()) {
-                var whatPieceOrThing = board.getPiece(endPosition);
                 moves.add(new ChessMove(position, endPosition, null));
                 break;
             } else {
