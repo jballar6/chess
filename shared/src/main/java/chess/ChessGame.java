@@ -87,13 +87,20 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece movingPiece = board.getPiece(move.getStartPosition());
+        TeamColor teamColor = movingPiece.getTeamColor();
         Collection<ChessMove> movingPieceValidMoves = validMoves(move.getStartPosition());
 
         if (movingPieceValidMoves.contains(move)) {
             boardHistory.add(new ChessBoard(board.getBoardCopy()));
 
             board.removePiece(move.getEndPosition());
-            board.addPiece(move.getEndPosition(), movingPiece);
+
+            if (movingPiece.getPieceType() == ChessPiece.PieceType.PAWN && move.getPromotionPiece() != null) {
+                board.addPiece(move.getEndPosition(), new ChessPiece(teamColor, move.getPromotionPiece()));
+            } else {
+                board.addPiece(move.getEndPosition(), movingPiece);
+            }
+
             board.removePiece(move.getStartPosition());
 
             if (isInCheck(teamTurn)) {
@@ -120,6 +127,10 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingLocation = board.getKingLocation(teamColor);
+        if (kingLocation == null) {
+            return false;
+        }
+
         TeamColor opponentTeam;
 
         if (teamColor == TeamColor.BLACK) {
