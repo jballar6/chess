@@ -14,15 +14,11 @@ import java.util.Objects;
 public class ChessGame {
     private TeamColor teamTurn;
     private ChessBoard board;
-    private ChessPosition blackKingLocation;
-    private ChessPosition whiteKingLocation;
     private final List<ChessBoard> boardHistory = new ArrayList<>();
 
     public ChessGame() {
         this.board = new ChessBoard();
         this.teamTurn = TeamColor.WHITE;
-        this.blackKingLocation = new ChessPosition(8,5);
-        this.whiteKingLocation = new ChessPosition(1,5);
     }
 
     @Override
@@ -106,14 +102,8 @@ public class ChessGame {
             }
 
             if (teamTurn == TeamColor.BLACK) {
-                if (movingPiece.getPieceType() == ChessPiece.PieceType.KING) {
-                    blackKingLocation = move.getEndPosition();
-                }
                 setTeamTurn(TeamColor.WHITE);
             } else {
-                if (movingPiece.getPieceType() == ChessPiece.PieceType.KING) {
-                    whiteKingLocation = move.getEndPosition();
-                }
                 setTeamTurn(TeamColor.BLACK);
             }
 
@@ -129,12 +119,29 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-//        if (teamColor == TeamColor.BLACK) {
-//            return
-//        } else {
-//
-//        }
-        throw new RuntimeException("Not implemented yet");
+        ChessPosition kingLocation = board.getKingLocation(teamColor);
+        TeamColor opponentTeam;
+
+        if (teamColor == TeamColor.BLACK) {
+            opponentTeam = TeamColor.WHITE;
+        } else {
+            opponentTeam = TeamColor.BLACK;
+        }
+
+        Collection<ChessPosition> opponentTeamPieces = board.getTeamPieces(opponentTeam);
+
+        for (ChessPosition pos : opponentTeamPieces) {
+            Collection<ChessMove> opponentPieceMoves = board.getPiece(pos).pieceMoves(board, pos);
+
+            for (ChessMove move : opponentPieceMoves) {
+                ChessPosition endPos = move.getEndPosition();
+                if (endPos == kingLocation) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
