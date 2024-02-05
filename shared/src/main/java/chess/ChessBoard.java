@@ -48,6 +48,14 @@ public class ChessBoard {
         }
     }
 
+    public void removePiece(ChessPosition position) {
+        if (position.getRow() <= 8 && position.getColumn() <= 8) {
+            squares[position.getRow() - 1][position.getColumn() - 1] = null;
+        } else {
+            throw new IllegalArgumentException("Given position is out of bounds.");
+        }
+    }
+
     /**
      * Gets a chess piece on the chessboard
      *
