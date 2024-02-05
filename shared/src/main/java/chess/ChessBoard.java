@@ -14,6 +14,14 @@ public class ChessBoard {
     public ChessBoard() {
     }
 
+    /**
+     * Overloaded constructor for use when a new board must
+     * be made with a custom arrangement of pieces
+     */
+    public ChessBoard(ChessPiece[][] squares) {
+        this.squares = squares;
+    }
+
     @Override
     public String toString() {
         return "ChessBoard{" +
@@ -32,10 +40,6 @@ public class ChessBoard {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(squares);
-    }
-
-    public ChessPiece[][] getBoardCopy() {
-        return Arrays.stream(squares).map(ChessPiece[]::clone).toArray(ChessPiece[][]::new);
     }
 
     /**
@@ -113,5 +117,14 @@ public class ChessBoard {
         squares[7][5] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
         squares[7][6] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
         squares[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+    }
+
+    /**
+     * Creates a copy of the current board state
+     *
+     * @return the 2D array copy of the existing board state when called
+     */
+    public ChessPiece[][] getBoardCopy() {
+        return Arrays.stream(squares).map(ChessPiece[]::clone).toArray(ChessPiece[][]::new);
     }
 }

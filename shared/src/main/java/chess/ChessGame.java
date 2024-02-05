@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -12,14 +14,12 @@ import java.util.Objects;
 public class ChessGame {
     private TeamColor teamTurn;
     private ChessBoard board;
-    private final BoardHistory boardHistory;
     private ChessPosition blackKingLocation;
     private ChessPosition whiteKingLocation;
+    private final List<ChessBoard> boardHistory = new ArrayList<>();
 
     public ChessGame() {
         this.board = new ChessBoard();
-        this.boardHistory = new BoardHistory();
-        boardHistory.addBoard(board.getBoardCopy());
         this.teamTurn = TeamColor.WHITE;
         this.blackKingLocation = new ChessPosition(8,5);
         this.whiteKingLocation = new ChessPosition(1,5);
@@ -94,12 +94,14 @@ public class ChessGame {
         Collection<ChessMove> movingPieceValidMoves = validMoves(move.getStartPosition());
 
         if (movingPieceValidMoves.contains(move)) {
-            boardHistory.addBoard(board.getBoardCopy());
+            boardHistory.add(new ChessBoard(board.getBoardCopy()));
+
             board.removePiece(move.getEndPosition());
             board.addPiece(move.getEndPosition(), movingPiece);
             board.removePiece(move.getStartPosition());
+
             if (isInCheck(teamTurn)) {
-                setBoard(boardHistory.getBoard(boardHistory.getArchiveSize()-1));
+                setBoard(boardHistory.getLast());
                 throw new InvalidMoveException("Invalid move, your King is in check. Try again.");
             }
 
