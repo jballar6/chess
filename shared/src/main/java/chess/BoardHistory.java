@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record BoardHistory() {
-    static List<ChessBoard> archive = new ArrayList<>();
+    static List<ChessPiece[][]> archive = new ArrayList<>();
+    private static int archiveSize = 0;
 
-    public void addBoard(ChessBoard board) {
+    public void addBoard(ChessPiece[][] board) {
         archive.add(board);
+        archiveSize++;
     }
 
-    public ChessBoard getBoard(int index) {
+    public ChessPiece[][] getBoard(int index) {
         return archive.get(index);
+    }
+
+    public int getArchiveSize() {
+        return archiveSize;
     }
 }

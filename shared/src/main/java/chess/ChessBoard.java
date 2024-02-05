@@ -34,6 +34,10 @@ public class ChessBoard {
         return Arrays.deepHashCode(squares);
     }
 
+    public ChessPiece[][] getBoardCopy() {
+        return Arrays.stream(squares).map(ChessPiece[]::clone).toArray(ChessPiece[][]::new);
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
