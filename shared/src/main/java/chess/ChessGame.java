@@ -12,9 +12,16 @@ import java.util.Objects;
 public class ChessGame {
     private TeamColor teamTurn;
     private ChessBoard board;
+    private BoardHistory boardHistory;
+    private ChessPosition blackKingLocation;
+    private ChessPosition whiteKingLocation;
 
     public ChessGame() {
         this.board = new ChessBoard();
+        this.boardHistory = new BoardHistory();
+        boardHistory.addBoard(board);
+        this.blackKingLocation = new ChessPosition(8,5);
+        this.whiteKingLocation = new ChessPosition(1,5);
     }
 
     @Override
@@ -86,9 +93,20 @@ public class ChessGame {
         Collection<ChessMove> movingPieceValidMoves = validMoves(move.getStartPosition());
 
         if (movingPieceValidMoves.contains(move)) {
+            boardHistory.addBoard(board);
             board.removePiece(move.getEndPosition());
             board.addPiece(move.getEndPosition(), movingPiece);
             board.removePiece(move.getStartPosition());
+
+            if (movingPiece.getPieceType() == ChessPiece.PieceType.KING) {
+                TeamColor kingColor = movingPiece.getTeamColor();
+                if (kingColor == TeamColor.BLACK) {
+                    blackKingLocation = move.getEndPosition();
+                } else {
+                    whiteKingLocation = move.getEndPosition();
+                }
+            }
+
         } else {
             throw new InvalidMoveException("Invalid move. Try again.");
         }
@@ -101,7 +119,12 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+//        if (teamColor == TeamColor.BLACK) {
+//            return
+//        } else {
+//
+//        }
+        throw new RuntimeException("Not implemented yet");
     }
 
     /**

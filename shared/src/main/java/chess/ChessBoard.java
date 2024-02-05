@@ -48,6 +48,11 @@ public class ChessBoard {
         }
     }
 
+    /**
+     * Removes a chess piece from the chessboard
+     *
+     * @param position where to remove the piece at
+     */
     public void removePiece(ChessPosition position) {
         if (position.getRow() <= 8 && position.getColumn() <= 8) {
             squares[position.getRow() - 1][position.getColumn() - 1] = null;
