@@ -26,6 +26,7 @@ public class ChessPosition {
                 '}';
     }
 
+    /** TODO : figure out why "position1 == position2" doesn't work when the row and column of each are the same */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

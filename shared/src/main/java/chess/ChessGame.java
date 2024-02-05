@@ -135,7 +135,7 @@ public class ChessGame {
 
             for (ChessMove move : opponentPieceMoves) {
                 ChessPosition endPos = move.getEndPosition();
-                if (endPos == kingLocation) {
+                if (endPos.getRow() == kingLocation.getRow() && endPos.getColumn() == kingLocation.getColumn()) {
                     return true;
                 }
             }
