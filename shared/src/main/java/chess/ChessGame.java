@@ -123,6 +123,10 @@ public class ChessGame {
 
         ChessPiece movingPiece = board.getPiece(move.getStartPosition());
         TeamColor teamColor = movingPiece.getTeamColor();
+        if (movingPiece.getTeamColor() != getTeamTurn()) {
+            throw new InvalidMoveException("Invalid move, moving out of turn.");
+        }
+
         Collection<ChessMove> movingPieceValidMoves = validMoves(move.getStartPosition());
 
         if (movingPieceValidMoves.contains(move)) {
@@ -148,6 +152,8 @@ public class ChessGame {
             } else {
                 setTeamTurn(TeamColor.BLACK);
             }
+        } else {
+            throw new InvalidMoveException("Invalid move. Try again.");
         }
     }
 
