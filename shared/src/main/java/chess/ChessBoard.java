@@ -82,7 +82,7 @@ public class ChessBoard {
         if (position.getRow() <= 8 && position.getRow() >= 1 && position.getColumn() <= 8 && position.getColumn() >= 1) {
             return squares[position.getRow() - 1][position.getColumn() - 1];
         } else {
-            throw new IllegalArgumentException("Given position is out of bounds.");
+            return null;
         }
     }
 

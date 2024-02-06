@@ -171,6 +171,10 @@ public class ChessGame {
         }
 
         Collection<ChessMove> kingMoves = board.getPiece(kingLocation).pieceMoves(board, kingLocation);
+        if (kingMoves.isEmpty()) {
+            return false;
+        }
+
         for (ChessMove kingMove : kingMoves) {
             try {
                 setTeamTurn(teamColor);
