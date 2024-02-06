@@ -1,9 +1,6 @@
 package chess;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -75,8 +72,44 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
+        TeamColor pieceColor = piece.getTeamColor();
+        Collection<ChessMove> pieceMoves = piece.pieceMoves(board, startPosition);
 
-        return piece.pieceMoves(board, startPosition);
+        Iterator<ChessMove> itr = pieceMoves.iterator();
+        while (itr.hasNext()) {
+            ChessMove move = itr.next();
+            try {
+                setTeamTurn(pieceColor);
+                simpleTestMove(move);
+                setBoard(boardHistory.getLast());
+            } catch (InvalidMoveException e) {
+                itr.remove();
+                setBoard(boardHistory.getLast());
+            }
+        }
+
+        return pieceMoves;
+    }
+
+    private void simpleTestMove(ChessMove move) throws InvalidMoveException {
+        if (move.getEndPosition().getRow() > 8 || move.getEndPosition().getRow() < 1 || move.getEndPosition().getColumn() > 8 || move.getEndPosition().getColumn() < 1) {
+            throw new InvalidMoveException("Invalid move. Try again.");
+        }
+
+        ChessPiece movingPiece = board.getPiece(move.getStartPosition());
+        TeamColor teamColor = movingPiece.getTeamColor();
+
+        boardHistory.add(new ChessBoard(board.getBoardCopy()));
+
+        board.removePiece(move.getEndPosition());
+        board.addPiece(move.getEndPosition(), movingPiece);
+        board.removePiece(move.getStartPosition());
+
+        if (isInCheck(teamColor)) {
+            throw new InvalidMoveException("Move resulted in King being in check!");
+        }
+
+        setBoard(boardHistory.getLast());
     }
 
     /**
@@ -87,9 +120,6 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         if (move.getEndPosition().getRow() > 8 || move.getEndPosition().getRow() < 1 || move.getEndPosition().getColumn() > 8 || move.getEndPosition().getColumn() < 1) {
-            throw new InvalidMoveException("Invalid move. Try again.");
-        }
-        if (move.getStartPosition().getRow() > 8 || move.getStartPosition().getRow() < 1 || move.getStartPosition().getColumn() > 8 || move.getStartPosition().getColumn() < 1) {
             throw new InvalidMoveException("Invalid move. Try again.");
         }
 
