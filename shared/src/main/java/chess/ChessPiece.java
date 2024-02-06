@@ -88,21 +88,13 @@ public class ChessPiece {
     }
 
     private PieceMovesCalculator createMovesCalculator(PieceType type) {
-        switch (type) {
-            case KING:
-                return new KingMovesCalculator();
-            case QUEEN:
-                return new QueenMovesCalculator();
-            case BISHOP:
-                return new BishopMovesCalculator();
-            case KNIGHT:
-                return new KnightMovesCalculator();
-            case ROOK:
-                return new RookMovesCalculator();
-            case PAWN:
-                return new PawnMovesCalculator();
-            default:
-                throw new IllegalArgumentException("Unrecognized piece type: " + type);
-        }
+        return switch (type) {
+            case KING -> new KingMovesCalculator();
+            case QUEEN -> new QueenMovesCalculator();
+            case BISHOP -> new BishopMovesCalculator();
+            case KNIGHT -> new KnightMovesCalculator();
+            case ROOK -> new RookMovesCalculator();
+            case PAWN -> new PawnMovesCalculator();
+        };
     }
 }
