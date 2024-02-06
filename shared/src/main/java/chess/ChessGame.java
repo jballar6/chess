@@ -91,10 +91,6 @@ public class ChessGame {
     }
 
     private void simpleTestMove(ChessMove move) throws InvalidMoveException {
-        if (move.getEndPosition().getRow() > 8 || move.getEndPosition().getRow() < 1 || move.getEndPosition().getColumn() > 8 || move.getEndPosition().getColumn() < 1) {
-            throw new InvalidMoveException("Invalid move. Try again.");
-        }
-
         ChessPiece movingPiece = board.getPiece(move.getStartPosition());
         TeamColor teamColor = movingPiece.getTeamColor();
 
@@ -117,10 +113,6 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (move.getEndPosition().getRow() > 8 || move.getEndPosition().getRow() < 1 || move.getEndPosition().getColumn() > 8 || move.getEndPosition().getColumn() < 1) {
-            throw new InvalidMoveException("Invalid move. Try again.");
-        }
-
         ChessPiece movingPiece = board.getPiece(move.getStartPosition());
         TeamColor teamColor = movingPiece.getTeamColor();
         if (movingPiece.getTeamColor() != getTeamTurn()) {
