@@ -51,7 +51,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        if (position.getRow() <= 8 && position.getColumn() <= 8) {
+        if (position.getRow() <= 8 && position.getRow() >= 1 && position.getColumn() <= 8 && position.getColumn() >= 1) {
             squares[position.getRow() - 1][position.getColumn() - 1] = piece;
         } else {
             throw new IllegalArgumentException("Given position is out of bounds.");
@@ -64,7 +64,7 @@ public class ChessBoard {
      * @param position where to remove the piece at
      */
     public void removePiece(ChessPosition position) {
-        if (position.getRow() <= 8 && position.getColumn() <= 8) {
+        if (position.getRow() <= 8 && position.getRow() >= 1 && position.getColumn() <= 8 && position.getColumn() >= 1) {
             squares[position.getRow() - 1][position.getColumn() - 1] = null;
         } else {
             throw new IllegalArgumentException("Given position is out of bounds.");
@@ -79,11 +79,10 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        if (position.getRow() <= 8 && position.getColumn() <= 8) {
+        if (position.getRow() <= 8 && position.getRow() >= 1 && position.getColumn() <= 8 && position.getColumn() >= 1) {
             return squares[position.getRow() - 1][position.getColumn() - 1];
         } else {
             throw new IllegalArgumentException("Given position is out of bounds.");
-
         }
     }
 
@@ -152,7 +151,7 @@ public class ChessBoard {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 var pos = new ChessPosition(i+1, j+1);
-                if (getPiece(pos) != null && getPiece(pos).getPieceType() == ChessPiece.PieceType.KING) {
+                if (getPiece(pos) != null && getPiece(pos).getPieceType() == ChessPiece.PieceType.KING && getPiece(pos).getTeamColor() == teamColor) {
                     return pos;
                 }
             }

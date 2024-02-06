@@ -86,6 +86,13 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        if (move.getEndPosition().getRow() > 8 || move.getEndPosition().getRow() < 1 || move.getEndPosition().getColumn() > 8 || move.getEndPosition().getColumn() < 1) {
+            throw new InvalidMoveException("Invalid move. Try again.");
+        }
+        if (move.getStartPosition().getRow() > 8 || move.getStartPosition().getRow() < 1 || move.getStartPosition().getColumn() > 8 || move.getStartPosition().getColumn() < 1) {
+            throw new InvalidMoveException("Invalid move. Try again.");
+        }
+
         ChessPiece movingPiece = board.getPiece(move.getStartPosition());
         TeamColor teamColor = movingPiece.getTeamColor();
         Collection<ChessMove> movingPieceValidMoves = validMoves(move.getStartPosition());
@@ -105,7 +112,7 @@ public class ChessGame {
 
             if (isInCheck(teamTurn)) {
                 setBoard(boardHistory.getLast());
-                throw new InvalidMoveException("Invalid move, your King is in check. Try again.");
+                throw new InvalidMoveException("King was in check!");
             }
 
             if (teamTurn == TeamColor.BLACK) {
@@ -113,9 +120,6 @@ public class ChessGame {
             } else {
                 setTeamTurn(TeamColor.BLACK);
             }
-
-        } else {
-            throw new InvalidMoveException("Invalid move. Try again.");
         }
     }
 
@@ -132,7 +136,6 @@ public class ChessGame {
         }
 
         TeamColor opponentTeam;
-
         if (teamColor == TeamColor.BLACK) {
             opponentTeam = TeamColor.WHITE;
         } else {
@@ -162,7 +165,23 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingLocation = board.getKingLocation(teamColor);
+        if (kingLocation == null) {
+            return false;
+        }
+
+        Collection<ChessMove> kingMoves = board.getPiece(kingLocation).pieceMoves(board, kingLocation);
+        for (ChessMove kingMove : kingMoves) {
+            try {
+                setTeamTurn(teamColor);
+                makeMove(kingMove);
+                setBoard(boardHistory.getLast());
+                return false;
+            } catch (InvalidMoveException ignored) {
+            }
+        }
+
+        return true;
     }
 
     /**
