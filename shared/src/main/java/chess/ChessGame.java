@@ -56,6 +56,17 @@ public class ChessGame {
     }
 
     /**
+     * @return Which team is the opponent of passed in team
+     */
+    public TeamColor getOpponentTeam(TeamColor teamColor) {
+        if (teamColor == TeamColor.BLACK) {
+            return TeamColor.WHITE;
+        } else {
+            return TeamColor.BLACK;
+        }
+    }
+
+    /**
      * Enum identifying the 2 possible teams in a chess game
      */
     public enum TeamColor {
@@ -90,6 +101,13 @@ public class ChessGame {
         return pieceMoves;
     }
 
+    /**
+     * Makes a simple test move that is expected to be reverted
+     * to confirm if a potential board state is valid
+     *
+     * @param move chess move to preform
+     * @throws InvalidMoveException if move is invalid
+     */
     private void simpleTestMove(ChessMove move) throws InvalidMoveException {
         ChessPiece movingPiece = board.getPiece(move.getStartPosition());
         TeamColor teamColor = movingPiece.getTeamColor();
@@ -114,13 +132,13 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPiece movingPiece = board.getPiece(move.getStartPosition());
+
         TeamColor teamColor = movingPiece.getTeamColor();
         if (movingPiece.getTeamColor() != getTeamTurn()) {
             throw new InvalidMoveException("Invalid move, moving out of turn.");
         }
 
         Collection<ChessMove> movingPieceValidMoves = validMoves(move.getStartPosition());
-
         if (movingPieceValidMoves.contains(move)) {
             boardHistory.add(new ChessBoard(board.getBoardCopy()));
 
@@ -134,16 +152,7 @@ public class ChessGame {
 
             board.removePiece(move.getStartPosition());
 
-            if (isInCheck(teamTurn)) {
-                setBoard(boardHistory.getLast());
-                throw new InvalidMoveException("King was in check!");
-            }
-
-            if (teamTurn == TeamColor.BLACK) {
-                setTeamTurn(TeamColor.WHITE);
-            } else {
-                setTeamTurn(TeamColor.BLACK);
-            }
+            setTeamTurn(getOpponentTeam(getTeamTurn()));
         } else {
             throw new InvalidMoveException("Invalid move. Try again.");
         }
@@ -161,12 +170,7 @@ public class ChessGame {
             return false;
         }
 
-        TeamColor opponentTeam;
-        if (teamColor == TeamColor.BLACK) {
-            opponentTeam = TeamColor.WHITE;
-        } else {
-            opponentTeam = TeamColor.BLACK;
-        }
+        TeamColor opponentTeam = getOpponentTeam(teamColor);
 
         Collection<ChessPosition> opponentTeamPieces = board.getTeamPieces(opponentTeam);
 
