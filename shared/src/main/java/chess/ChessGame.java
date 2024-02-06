@@ -84,7 +84,6 @@ public class ChessGame {
                 setBoard(boardHistory.getLast());
             } catch (InvalidMoveException e) {
                 itr.remove();
-                setBoard(boardHistory.getLast());
             }
         }
 
@@ -106,10 +105,9 @@ public class ChessGame {
         board.removePiece(move.getStartPosition());
 
         if (isInCheck(teamColor)) {
+            setBoard(boardHistory.getLast());
             throw new InvalidMoveException("Move resulted in King being in check!");
         }
-
-        setBoard(boardHistory.getLast());
     }
 
     /**
@@ -208,7 +206,7 @@ public class ChessGame {
         for (ChessMove kingMove : kingMoves) {
             try {
                 setTeamTurn(teamColor);
-                makeMove(kingMove);
+                simpleTestMove(kingMove);
                 setBoard(boardHistory.getLast());
                 return false;
             } catch (InvalidMoveException ignored) {
@@ -233,7 +231,7 @@ public class ChessGame {
             for (ChessMove move : pieceMoves) {
                 try {
                     setTeamTurn(teamColor);
-                    makeMove(move);
+                    simpleTestMove(move);
                     setBoard(boardHistory.getLast());
                     return false;
                 } catch (InvalidMoveException ignored) {
