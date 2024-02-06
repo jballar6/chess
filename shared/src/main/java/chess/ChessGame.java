@@ -76,6 +76,7 @@ public class ChessGame {
 
     /**
      * Gets a valid moves for a piece at the given location
+     * Can be used to find if any move causes check
      *
      * @param startPosition the piece to get valid moves for
      * @return Set of valid moves for requested piece, or null if no piece at
@@ -198,21 +199,15 @@ public class ChessGame {
             return false;
         }
 
+        //Test if King is surrounded by teammates
         Collection<ChessMove> kingMoves = board.getPiece(kingLocation).pieceMoves(board, kingLocation);
         if (kingMoves.isEmpty()) {
             return false;
         }
 
-        for (ChessMove kingMove : kingMoves) {
-            try {
-                simpleTestMove(kingMove);
-                setBoard(boardHistory.getLast());
-                return false;
-            } catch (InvalidMoveException ignored) {
-            }
-        }
-
-        return true;
+        //Test if King can make a move out of check
+        kingMoves = validMoves(kingLocation);
+        return kingMoves.isEmpty();
     }
 
     /**
@@ -226,14 +221,9 @@ public class ChessGame {
         Collection<ChessPosition> teamPieces = board.getTeamPieces(teamColor);
 
         for (ChessPosition pos : teamPieces) {
-            Collection<ChessMove> pieceMoves = board.getPiece(pos).pieceMoves(board, pos);
-            for (ChessMove move : pieceMoves) {
-                try {
-                    simpleTestMove(move);
-                    setBoard(boardHistory.getLast());
-                    return false;
-                } catch (InvalidMoveException ignored) {
-                }
+            Collection<ChessMove> pieceMoves = validMoves(pos);
+            if (!pieceMoves.isEmpty()) {
+                return false;
             }
         }
 
