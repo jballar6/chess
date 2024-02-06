@@ -83,14 +83,12 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
-        TeamColor pieceColor = piece.getTeamColor();
         Collection<ChessMove> pieceMoves = piece.pieceMoves(board, startPosition);
 
         Iterator<ChessMove> itr = pieceMoves.iterator();
         while (itr.hasNext()) {
             ChessMove move = itr.next();
             try {
-                setTeamTurn(pieceColor);
                 simpleTestMove(move);
                 setBoard(boardHistory.getLast());
             } catch (InvalidMoveException e) {
@@ -207,7 +205,6 @@ public class ChessGame {
 
         for (ChessMove kingMove : kingMoves) {
             try {
-                setTeamTurn(teamColor);
                 simpleTestMove(kingMove);
                 setBoard(boardHistory.getLast());
                 return false;
@@ -232,7 +229,6 @@ public class ChessGame {
             Collection<ChessMove> pieceMoves = board.getPiece(pos).pieceMoves(board, pos);
             for (ChessMove move : pieceMoves) {
                 try {
-                    setTeamTurn(teamColor);
                     simpleTestMove(move);
                     setBoard(boardHistory.getLast());
                     return false;
