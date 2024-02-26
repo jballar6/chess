@@ -1,5 +1,6 @@
 package server;
 
+import com.google.gson.Gson;
 import spark.*;
 
 import java.nio.file.Paths;
