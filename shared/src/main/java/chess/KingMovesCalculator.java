@@ -12,8 +12,6 @@ public class KingMovesCalculator implements PieceMovesCalculator {
 
         addDiagonalMoves(moves, board, position);
 
-        getCastleMove(moves, board, position);
-
         return moves;
     }
 

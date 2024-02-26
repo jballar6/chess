@@ -12,8 +12,6 @@ public class ChessGame {
     private TeamColor teamTurn;
     private ChessBoard board;
     private final List<ChessBoard> boardHistory = new ArrayList<>();
-    private boolean blackCastled = false;
-    private boolean whiteCastled = false;
 
     public ChessGame() {
         this.board = new ChessBoard();
@@ -122,11 +120,6 @@ public class ChessGame {
         if (isInCheck(teamColor)) {
             setBoard(boardHistory.getLast());
             throw new InvalidMoveException("Move resulted in King being in check!");
-        }
-        if (movingPiece.getPieceType() == ChessPiece.PieceType.KING && teamColor == TeamColor.WHITE) {
-            if (move.getEndPosition().getColumn() == move.getStartPosition().getColumn()+2 || move.getEndPosition().getColumn() == move.getStartPosition().getColumn()-2) {
-
-            }
         }
     }
 
