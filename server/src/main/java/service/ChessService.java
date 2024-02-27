@@ -13,7 +13,7 @@ public class ChessService {
     //endpoints:
     // clear application
     public void clearDatabase() {
-        dataAccess.clearDatabase();
+        dataAccess.clear();
     }
     // register
     // login
