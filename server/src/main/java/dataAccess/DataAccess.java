@@ -9,13 +9,15 @@ import java.util.Collection;
 public interface DataAccess {
     void clear();
 
-    void registerUser(String username, String password, String email) throws DataAccessException;
+    void registerUser(UserData user) throws DataAccessException;
 
-    void getUser(UserData user) throws DataAccessException;
+    boolean getUser(String user) throws DataAccessException;
 
-    void loginUser(UserData user) throws DataAccessException;
+    AuthData createAuth(String username) throws DataAccessException;
 
-    void logoutUser(UserData user, AuthData auth) throws DataAccessException;
+    boolean getAuth(String username) throws DataAccessException;
+
+    void deleteAuth(String username) throws DataAccessException;
 
     Collection<GameData> listGames(AuthData auth) throws DataAccessException;
 
@@ -24,10 +26,4 @@ public interface DataAccess {
     void updateGame(GameData game, AuthData auth) throws DataAccessException;
 
     void joinGame(GameData game, AuthData auth) throws DataAccessException;
-
-    void createAuth() throws DataAccessException;
-
-    void getAuth(AuthData auth) throws DataAccessException;
-
-    void deleteAuth(AuthData auth) throws DataAccessException;
 }

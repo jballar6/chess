@@ -1,6 +1,10 @@
 package server;
 
+import com.google.gson.Gson;
+import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
+import model.*;
+import response.registerSuccess;
 import service.ChessService;
 import spark.*;
 
@@ -25,9 +29,14 @@ public class Server {
         Spark.get("/game", this::listGames);
         Spark.post("/game", this::createGame);
         Spark.put("/game", this::joinGame);
+        Spark.exception(ResponseException.class, this::exceptionHandler);
 
         Spark.awaitInitialization();
         return Spark.port();
+    }
+
+    private void exceptionHandler(ResponseException e, Request request, Response response) {
+        response.status(e.StatusCode());
     }
 
     public void stop() {
@@ -55,8 +64,12 @@ public class Server {
         return null;
     }
 
-    private Object registerUser(Request request, Response response) {
-        return null;
+    private Object registerUser(Request request, Response response) throws DataAccessException {
+        var user = new Gson().fromJson(request.body(), UserData.class);
+        AuthData auth = service.registerUser(user);
+        response.status(200);
+        var responseMessage = new registerSuccess(auth.username(), auth.authToken());
+        return new Gson().toJson(responseMessage);
     }
 
     private Object clear(Request request, Response response) {

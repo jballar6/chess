@@ -1,18 +1,14 @@
 package dataAccess;
 
-import model.AuthData;
-import model.GameData;
-import model.UserData;
+import model.*;
 
 import java.util.Collection;
 import java.util.HashMap;
 
 public class MemoryDataAccess implements DataAccess {
-    final private HashMap<Integer, AuthData> authTokens = new HashMap<>();
-    final private HashMap<Integer, GameData> games = new HashMap<>();
-    final private HashMap<Integer, UserData> users = new HashMap<>();
-
-    private int nextId = 0;
+    final private HashMap<String, AuthData> authTokens = new HashMap<>();
+    final private HashMap<String, GameData> games = new HashMap<>();
+    final private HashMap<String, UserData> users = new HashMap<>();
 
     @Override
     public void clear() {
@@ -22,25 +18,32 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public void registerUser(String username, String password, String email) throws DataAccessException {
-        var user = new UserData(username, password, email);
-
-        users.put(nextId++, user);
+    public void registerUser(UserData user) throws DataAccessException {
+        users.put(user.username(), user);
     }
 
     @Override
-    public void getUser(UserData user) throws DataAccessException {
-
+    public boolean getUser(String username) throws DataAccessException {
+        return users.containsKey(username);
     }
 
     @Override
-    public void loginUser(UserData user) throws DataAccessException {
+    public AuthData createAuth(String username) {
+        var auth = new AuthData("test", username);
 
+        authTokens.put(username, auth);
+
+        return auth;
     }
 
     @Override
-    public void logoutUser(UserData user, AuthData auth) throws DataAccessException {
+    public boolean getAuth(String username) throws DataAccessException {
+        return authTokens.containsKey(username);
+    }
 
+    @Override
+    public void deleteAuth(String username) throws DataAccessException {
+        authTokens.remove(username);
     }
 
     @Override
@@ -60,21 +63,6 @@ public class MemoryDataAccess implements DataAccess {
 
     @Override
     public void joinGame(GameData game, AuthData auth) throws DataAccessException {
-
-    }
-
-    @Override
-    public void createAuth() throws DataAccessException {
-
-    }
-
-    @Override
-    public void getAuth(AuthData auth) throws DataAccessException {
-
-    }
-
-    @Override
-    public void deleteAuth(AuthData auth) throws DataAccessException {
 
     }
 }
