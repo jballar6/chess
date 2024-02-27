@@ -1,6 +1,7 @@
 package service;
 
 import dataAccess.DataAccess;
+import dataAccess.DataAccessException;
 
 public class ChessService {
 
@@ -12,10 +13,13 @@ public class ChessService {
 
     //endpoints:
     // clear application
-    public void clearDatabase() {
+    public void clear() {
         dataAccess.clear();
     }
     // register
+    public void registerUser(String username, String password, String email) throws DataAccessException {
+        dataAccess.registerUser(username, password, email);
+    }
     // login
     // logout
     // list games

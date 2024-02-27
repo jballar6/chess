@@ -30,6 +30,11 @@ public class Server {
         return Spark.port();
     }
 
+    public void stop() {
+        Spark.stop();
+        Spark.awaitStop();
+    }
+
     private Object joinGame(Request request, Response response) {
         return null;
     }
@@ -55,13 +60,8 @@ public class Server {
     }
 
     private Object clear(Request request, Response response) {
-        service.clearDatabase();
+        service.clear();
         response.status(200);
         return "";
-    }
-
-    public void stop() {
-        Spark.stop();
-        Spark.awaitStop();
     }
 }
