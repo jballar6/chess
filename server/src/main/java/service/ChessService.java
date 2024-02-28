@@ -3,7 +3,11 @@ package service;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import model.*;
+import requests.joinGameRequest;
 import server.ResponseException;
+
+import java.util.Collection;
+import java.util.Objects;
 
 public class ChessService {
 
@@ -13,12 +17,10 @@ public class ChessService {
         this.dataAccess = dataAccess;
     }
 
-    //endpoints:
-    // clear application
     public void clear() {
         dataAccess.clear();
     }
-    // register
+
     public AuthData registerUser(UserData userData) throws ResponseException {
         try {
             if (userData.username() == null || userData.password() == null || userData.email() == null) {
@@ -37,7 +39,6 @@ public class ChessService {
         }
     }
 
-    // login
     public AuthData loginUser(UserData userData) throws ResponseException {
         //return the username and authToken
         try {
@@ -55,7 +56,7 @@ public class ChessService {
             throw new ResponseException(500, "Error: " + e.getMessage());
         }
     }
-    // logout
+
     public void logoutUser(String authToken) throws ResponseException {
         try {
             if (!dataAccess.getAuth(authToken)) {
@@ -67,11 +68,16 @@ public class ChessService {
             throw new ResponseException(500, "Error: " + e.getMessage());
         }
     }
-    // list games
-    public void listGames() {
+
+    public Collection<GameData> listGames(String authToken) throws ResponseException {
+        try {
+            return dataAccess.listGames();
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Error: " + e.getMessage());
+        }
     }
-    // create game
-    public void createGame(String authToken, GameData game) throws ResponseException {
+
+    public GameData createGame(String authToken, GameData game) throws ResponseException {
         try {
             if (game.gameName() == null) {
                 throw new ResponseException(400, "Error: bad request ");
@@ -80,14 +86,34 @@ public class ChessService {
                 throw new ResponseException(401, "Error: unauthorized ");
             }
             else {
-                dataAccess.createGame(game);
+                return dataAccess.createGame(game);
             }
         } catch (DataAccessException e) {
             throw new ResponseException(500, "Error: " + e.getMessage());
         }
     }
-    // join game
-    public void joinGame() {
 
+    public void joinGame(String authToken, joinGameRequest joinGameRequest) throws ResponseException {
+        try {
+            if ((joinGameRequest.playerColor() == null)) {
+                throw new ResponseException(400, "Error: bad request ");
+            }
+            if (!dataAccess.getAuth(authToken)) {
+                throw new ResponseException(401, "Error: unauthorized ");
+            }
+            if (dataAccess.getGame(joinGameRequest.gameID()) == null) {
+                throw new ResponseException(400, "Error: bad request ");
+            }
+            var playerColor = joinGameRequest.playerColor();
+            if (dataAccess.getGame(joinGameRequest.gameID()).blackUsername() == null && playerColor.equals("BLACK")) {
+                dataAccess.joinGame(authToken, joinGameRequest.gameID(), joinGameRequest.playerColor());
+            } else if (dataAccess.getGame(joinGameRequest.gameID()).whiteUsername() == null && playerColor.equals("WHITE")) {
+                dataAccess.joinGame(authToken, joinGameRequest.gameID(), joinGameRequest.playerColor());
+            } else {
+                throw new ResponseException(403, "Error: already taken ");
+            }
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Error: " + e.getMessage());
+        }
     }
 }

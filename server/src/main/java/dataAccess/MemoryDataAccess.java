@@ -4,6 +4,7 @@ import model.*;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 public class MemoryDataAccess implements DataAccess {
@@ -71,24 +72,31 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public Collection<GameData> listGames(AuthData auth) throws DataAccessException {
+    public Collection<GameData> listGames() throws DataAccessException {
         return games.values();
     }
 
     @Override
-    public void createGame(GameData game) throws DataAccessException {
+    public GameData getGame(int gameID) throws DataAccessException {
+        return games.get(gameID);
+    }
+
+    @Override
+    public GameData createGame(GameData game) throws DataAccessException {
         nextId++;
-        game.setGameID(nextId);
+        game = game.setGameID(nextId);
         games.put(nextId, game);
+        return game;
     }
 
     @Override
-    public void updateGame(GameData game, AuthData auth) throws DataAccessException {
-
-    }
-
-    @Override
-    public void joinGame(GameData game, AuthData auth) throws DataAccessException {
-
+    public void joinGame(String authToken, int gameID, String playerColor) throws DataAccessException {
+        var game = games.get(gameID);
+        var user = authTokens.get(authToken);
+        if (Objects.equals(playerColor, "BLACK")) {
+            games.put(gameID, game.setBlackUsername(user.username()));
+        } else {
+            games.put(gameID, game.setWhiteUsername(user.username()));
+        }
     }
 }

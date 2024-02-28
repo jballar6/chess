@@ -3,6 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
+import requests.joinGameRequest;
 import model.*;
 import service.ChessService;
 import spark.*;
@@ -44,20 +45,27 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private Object joinGame(Request request, Response response) {
-        return null;
+    private Object joinGame(Request request, Response response) throws ResponseException {
+        String authToken = request.headers("authorization");
+        var joinGameRequest = new Gson().fromJson(request.body(), joinGameRequest.class);
+        service.joinGame(authToken, joinGameRequest);
+        response.status(200);
+        return "{}";
     }
 
     private Object createGame(Request request, Response response) throws ResponseException {
         String authToken = request.headers("authorization");
         var game = new Gson().fromJson(request.body(), GameData.class);
-        service.createGame(authToken, game);
+        game = service.createGame(authToken, game);
         response.status(200);
         return new Gson().toJson(game.gameID());
     }
 
-    private Object listGames(Request request, Response response) {
-        return null;
+    private Object listGames(Request request, Response response) throws ResponseException {
+        String authToken = request.headers("authorization");
+        var games = service.listGames(authToken);
+        response.status(200);
+        return new Gson().toJson(games);
     }
 
     private Object logoutUser(Request request, Response response) throws ResponseException {
