@@ -1,7 +1,9 @@
 package serviceTests;
 
 import dataAccess.MemoryDataAccess;
+import model.GameData;
 import model.UserData;
+import requests.joinGameRequest;
 import org.eclipse.jetty.server.Authentication;
 import org.junit.jupiter.api.Test;
 import server.ResponseException;
@@ -77,26 +79,61 @@ class ChessServiceTest {
     }
 
     @Test
-    void listGamesSuccess() {
+    void listGamesSuccess() throws ResponseException {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        var testUser1 = new UserData("user", "pass", "email@email.com");
+        var auth = service.registerUser(testUser1);
+        var game = new GameData(0, null, null, "testGame", "");
+        service.createGame(auth.authToken(), game);
+        assert(!service.listGames(auth.authToken()).games().isEmpty());
     }
 
     @Test
     void listGamesFailure() {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        assertThrows(ResponseException.class, () -> service.listGames(null));
     }
 
     @Test
-    void createGameSuccess() {
+    void createGameSuccess() throws ResponseException {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        var testUser1 = new UserData("user", "pass", "email@email.com");
+        var auth = service.registerUser(testUser1);
+        var game = new GameData(0, null, null, "testGame", "");
+        var createGameResponse = service.createGame(auth.authToken(), game);
+        assert(createGameResponse.gameID() > 0);
     }
 
     @Test
     void createGameFailure() {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        var testUser1 = new UserData("user", "pass", "email@email.com");
+        var game = new GameData(0, null, null, "testGame", "");
+        assertThrows(ResponseException.class, () -> service.createGame(null, game));
     }
 
     @Test
-    void joinGameSuccess() {
+    void joinGameSuccess() throws ResponseException {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        var testUser1 = new UserData("user", "pass", "email@email.com");
+        var auth = service.registerUser(testUser1);
+        var game = new GameData(0, null, null, "testGame", "");
+        var createGameResponse = service.createGame(auth.authToken(), game);
+        var joinGame = new joinGameRequest("BLACK", createGameResponse.gameID());
+        assertDoesNotThrow(() -> service.joinGame(auth.authToken(), joinGame));
     }
 
     @Test
-    void joinGameFailure() {
+    void joinGameFailure() throws ResponseException {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        var game = new GameData(0, null, null, "testGame", "");
+        var joinGame = new joinGameRequest("BLACK", game.gameID());
+        assertThrows(ResponseException.class, () -> service.joinGame(null, joinGame));
     }
 }

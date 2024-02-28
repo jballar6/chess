@@ -56,9 +56,9 @@ public class Server {
     private Object createGame(Request request, Response response) throws ResponseException {
         String authToken = request.headers("authorization");
         var game = new Gson().fromJson(request.body(), GameData.class);
-        game = service.createGame(authToken, game);
+        var createGameResponse = service.createGame(authToken, game);
         response.status(200);
-        return new Gson().toJson(game.gameID());
+        return new Gson().toJson(createGameResponse);
     }
 
     private Object listGames(Request request, Response response) throws ResponseException {

@@ -4,10 +4,9 @@ import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import model.*;
 import requests.joinGameRequest;
+import responses.CreateGameResponse;
+import responses.ListGamesResponse;
 import server.ResponseException;
-
-import java.util.Collection;
-import java.util.Objects;
 
 public class ChessService {
 
@@ -69,15 +68,19 @@ public class ChessService {
         }
     }
 
-    public Collection<GameData> listGames(String authToken) throws ResponseException {
+    public ListGamesResponse listGames(String authToken) throws ResponseException {
         try {
-            return dataAccess.listGames();
+            if (!dataAccess.getAuth(authToken)) {
+                throw new ResponseException(401, "Error: unauthorized ");
+            }
+            var gamesCollection = dataAccess.listGames();
+            return new ListGamesResponse(gamesCollection);
         } catch (DataAccessException e) {
             throw new ResponseException(500, "Error: " + e.getMessage());
         }
     }
 
-    public GameData createGame(String authToken, GameData game) throws ResponseException {
+    public CreateGameResponse createGame(String authToken, GameData game) throws ResponseException {
         try {
             if (game.gameName() == null) {
                 throw new ResponseException(400, "Error: bad request ");
@@ -86,7 +89,8 @@ public class ChessService {
                 throw new ResponseException(401, "Error: unauthorized ");
             }
             else {
-                return dataAccess.createGame(game);
+                var newGame = dataAccess.createGame(game);
+                return new CreateGameResponse(newGame.gameID());
             }
         } catch (DataAccessException e) {
             throw new ResponseException(500, "Error: " + e.getMessage());
@@ -95,14 +99,14 @@ public class ChessService {
 
     public void joinGame(String authToken, joinGameRequest joinGameRequest) throws ResponseException {
         try {
-            if ((joinGameRequest.playerColor() == null)) {
-                throw new ResponseException(400, "Error: bad request ");
-            }
             if (!dataAccess.getAuth(authToken)) {
                 throw new ResponseException(401, "Error: unauthorized ");
             }
             if (dataAccess.getGame(joinGameRequest.gameID()) == null) {
                 throw new ResponseException(400, "Error: bad request ");
+            }
+            if ((joinGameRequest.playerColor() == null)) {
+                return;
             }
             var playerColor = joinGameRequest.playerColor();
             if (dataAccess.getGame(joinGameRequest.gameID()).blackUsername() == null && playerColor.equals("BLACK")) {
