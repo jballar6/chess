@@ -11,6 +11,18 @@ public class MemoryDataAccess implements DataAccess {
     final private HashMap<String, GameData> games = new HashMap<>();
     final private HashMap<String, UserData> users = new HashMap<>();
 
+    public Integer authSize() {
+        return authTokens.size();
+    }
+
+    public Integer gamesSize() {
+        return games.size();
+    }
+
+    public Integer usersSize() {
+        return users.size();
+    }
+
     @Override
     public void clear() {
         authTokens.clear();
