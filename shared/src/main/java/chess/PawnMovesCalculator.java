@@ -19,7 +19,6 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
         ChessPiece myPiece = board.getPiece(position);
         ChessGame.TeamColor pieceTeam = myPiece.getTeamColor();
 
-
         if (pieceTeam == ChessGame.TeamColor.WHITE) {
             //checking for opponent pieces
             ChessPosition upLeft = new ChessPosition(row + 1, col - 1);
@@ -31,24 +30,7 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
             ChessPosition standardEndPosition = new ChessPosition(row + 1, col);
 
             if (standardEndPosition.getRow() == 8) {
-                if (board.getPiece(standardEndPosition) == null) {
-                    moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.QUEEN));
-                    moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.KNIGHT));
-                    moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.ROOK));
-                    moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.BISHOP));
-                }
-                if (upRightPiece != null && upRightPiece.getTeamColor() != pieceTeam) {
-                    moves.add(new ChessMove(position, upRight, ChessPiece.PieceType.QUEEN));
-                    moves.add(new ChessMove(position, upRight, ChessPiece.PieceType.KNIGHT));
-                    moves.add(new ChessMove(position, upRight, ChessPiece.PieceType.ROOK));
-                    moves.add(new ChessMove(position, upRight, ChessPiece.PieceType.BISHOP));
-                }
-                if (upLeftPiece != null && upLeftPiece.getTeamColor() != pieceTeam) {
-                    moves.add(new ChessMove(position, upLeft, ChessPiece.PieceType.QUEEN));
-                    moves.add(new ChessMove(position, upLeft, ChessPiece.PieceType.KNIGHT));
-                    moves.add(new ChessMove(position, upLeft, ChessPiece.PieceType.ROOK));
-                    moves.add(new ChessMove(position, upLeft, ChessPiece.PieceType.BISHOP));
-                }
+                pawnPromotionMove(moves, board, position, pieceTeam, upLeft, upLeftPiece, upRight, upRightPiece, standardEndPosition);
             } else {
                 if (board.getPiece(standardEndPosition) == null) {
                     moves.add(new ChessMove(position, standardEndPosition, null));
@@ -69,7 +51,6 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
                 }
             }
         }
-        //BLACK SIDE PAWN
         else if (pieceTeam == ChessGame.TeamColor.BLACK) {
             //checking for opponent pieces
             ChessPosition downLeft = new ChessPosition(row - 1, col - 1);
@@ -81,24 +62,7 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
             ChessPosition standardEndPosition = new ChessPosition(row - 1, col);
 
             if (standardEndPosition.getRow() == 1) {
-                if (board.getPiece(standardEndPosition) == null) {
-                    moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.QUEEN));
-                    moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.KNIGHT));
-                    moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.ROOK));
-                    moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.BISHOP));
-                }
-                if (downRightPiece != null && downRightPiece.getTeamColor() != pieceTeam) {
-                    moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.QUEEN));
-                    moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.KNIGHT));
-                    moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.ROOK));
-                    moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.BISHOP));
-                }
-                if (downLeftPiece != null && downLeftPiece.getTeamColor() != pieceTeam) {
-                    moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.QUEEN));
-                    moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.KNIGHT));
-                    moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.ROOK));
-                    moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.BISHOP));
-                }
+                pawnPromotionMove(moves, board, position, pieceTeam, downLeft, downLeftPiece, downRight, downRightPiece, standardEndPosition);
             } else {
                 if (board.getPiece(standardEndPosition) == null) {
                     moves.add(new ChessMove(position, standardEndPosition, null));
@@ -118,6 +82,27 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
                     moves.add(new ChessMove(position, downLeft, null));
                 }
             }
+        }
+    }
+
+    private void pawnPromotionMove(Collection<ChessMove> moves, ChessBoard board, ChessPosition position, ChessGame.TeamColor pieceTeam, ChessPosition downLeft, ChessPiece downLeftPiece, ChessPosition downRight, ChessPiece downRightPiece, ChessPosition standardEndPosition) {
+        if (board.getPiece(standardEndPosition) == null) {
+            moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.QUEEN));
+            moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.KNIGHT));
+            moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.ROOK));
+            moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.BISHOP));
+        }
+        if (downRightPiece != null && downRightPiece.getTeamColor() != pieceTeam) {
+            moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.QUEEN));
+            moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.KNIGHT));
+            moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.ROOK));
+            moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.BISHOP));
+        }
+        if (downLeftPiece != null && downLeftPiece.getTeamColor() != pieceTeam) {
+            moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.QUEEN));
+            moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.KNIGHT));
+            moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.ROOK));
+            moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.BISHOP));
         }
     }
 }

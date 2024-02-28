@@ -3,8 +3,7 @@ package serviceTests;
 import dataAccess.MemoryDataAccess;
 import model.GameData;
 import model.UserData;
-import requests.joinGameRequest;
-import org.eclipse.jetty.server.Authentication;
+import requests.JoinGameRequest;
 import org.junit.jupiter.api.Test;
 import server.ResponseException;
 import service.ChessService;
@@ -124,7 +123,7 @@ class ChessServiceTest {
         var auth = service.registerUser(testUser1);
         var game = new GameData(0, null, null, "testGame", "");
         var createGameResponse = service.createGame(auth.authToken(), game);
-        var joinGame = new joinGameRequest("BLACK", createGameResponse.gameID());
+        var joinGame = new JoinGameRequest("BLACK", createGameResponse.gameID());
         assertDoesNotThrow(() -> service.joinGame(auth.authToken(), joinGame));
     }
 
@@ -133,7 +132,7 @@ class ChessServiceTest {
         var dao = new MemoryDataAccess();
         var service = new ChessService(dao);
         var game = new GameData(0, null, null, "testGame", "");
-        var joinGame = new joinGameRequest("BLACK", game.gameID());
+        var joinGame = new JoinGameRequest("BLACK", game.gameID());
         assertThrows(ResponseException.class, () -> service.joinGame(null, joinGame));
     }
 }

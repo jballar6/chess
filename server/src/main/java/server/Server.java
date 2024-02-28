@@ -1,9 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
-import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
-import requests.joinGameRequest;
+import requests.JoinGameRequest;
 import model.*;
 import service.ChessService;
 import spark.*;
@@ -47,7 +46,7 @@ public class Server {
 
     private Object joinGame(Request request, Response response) throws ResponseException {
         String authToken = request.headers("authorization");
-        var joinGameRequest = new Gson().fromJson(request.body(), joinGameRequest.class);
+        var joinGameRequest = new Gson().fromJson(request.body(), JoinGameRequest.class);
         service.joinGame(authToken, joinGameRequest);
         response.status(200);
         return "{}";

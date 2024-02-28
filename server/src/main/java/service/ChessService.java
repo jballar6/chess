@@ -3,7 +3,7 @@ package service;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import model.*;
-import requests.joinGameRequest;
+import requests.JoinGameRequest;
 import responses.CreateGameResponse;
 import responses.ListGamesResponse;
 import server.ResponseException;
@@ -97,7 +97,7 @@ public class ChessService {
         }
     }
 
-    public void joinGame(String authToken, joinGameRequest joinGameRequest) throws ResponseException {
+    public void joinGame(String authToken, JoinGameRequest joinGameRequest) throws ResponseException {
         try {
             if (!dataAccess.getAuth(authToken)) {
                 throw new ResponseException(401, "Error: unauthorized ");
