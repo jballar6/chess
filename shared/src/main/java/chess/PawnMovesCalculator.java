@@ -87,22 +87,22 @@ public class PawnMovesCalculator implements PieceMovesCalculator {
 
     private void pawnPromotionMove(Collection<ChessMove> moves, ChessBoard board, ChessPosition position, ChessGame.TeamColor pieceTeam, ChessPosition downLeft, ChessPiece downLeftPiece, ChessPosition downRight, ChessPiece downRightPiece, ChessPosition standardEndPosition) {
         if (board.getPiece(standardEndPosition) == null) {
-            moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.QUEEN));
-            moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.KNIGHT));
-            moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.ROOK));
-            moves.add(new ChessMove(position, standardEndPosition, ChessPiece.PieceType.BISHOP));
+            addPromotionOptions(moves, position, standardEndPosition);
         }
+        pawnAttackPromotion(moves, position, pieceTeam, downRight, downRightPiece);
+        pawnAttackPromotion(moves, position, pieceTeam, downLeft, downLeftPiece);
+    }
+
+    private void pawnAttackPromotion(Collection<ChessMove> moves, ChessPosition position, ChessGame.TeamColor pieceTeam, ChessPosition downRight, ChessPiece downRightPiece) {
         if (downRightPiece != null && downRightPiece.getTeamColor() != pieceTeam) {
-            moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.QUEEN));
-            moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.KNIGHT));
-            moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.ROOK));
-            moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.BISHOP));
+            addPromotionOptions(moves, position, downRight);
         }
-        if (downLeftPiece != null && downLeftPiece.getTeamColor() != pieceTeam) {
-            moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.QUEEN));
-            moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.KNIGHT));
-            moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.ROOK));
-            moves.add(new ChessMove(position, downLeft, ChessPiece.PieceType.BISHOP));
-        }
+    }
+
+    private void addPromotionOptions(Collection<ChessMove> moves, ChessPosition position, ChessPosition downRight) {
+        moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.QUEEN));
+        moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.KNIGHT));
+        moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.ROOK));
+        moves.add(new ChessMove(position, downRight, ChessPiece.PieceType.BISHOP));
     }
 }
