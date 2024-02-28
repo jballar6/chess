@@ -8,8 +8,10 @@ import java.util.UUID;
 
 public class MemoryDataAccess implements DataAccess {
     final private HashMap<String, AuthData> authTokens = new HashMap<>();
-    final private HashMap<String, GameData> games = new HashMap<>();
+    final private HashMap<Integer, GameData> games = new HashMap<>();
     final private HashMap<String, UserData> users = new HashMap<>();
+
+    private Integer nextId = 0;
 
     public Integer authSize() {
         return authTokens.size();
@@ -46,7 +48,7 @@ public class MemoryDataAccess implements DataAccess {
 
     @Override
     public UserData getUser(UserData user) throws DataAccessException {
-        return users.get(user);
+        return users.get(user.username());
     }
 
     @Override
@@ -74,8 +76,10 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public void createGame(AuthData auth) throws DataAccessException {
-
+    public void createGame(GameData game) throws DataAccessException {
+        nextId++;
+        game.setGameID(nextId);
+        games.put(nextId, game);
     }
 
     @Override

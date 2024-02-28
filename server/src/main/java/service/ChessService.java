@@ -44,6 +44,10 @@ public class ChessService {
             if (!dataAccess.userExists(userData.username())) {
                 throw new ResponseException(401, "Error: unauthorized ");
             }
+            var user = dataAccess.getUser(userData);
+            if (!user.password().equals(userData.password())) {
+                throw new ResponseException(401, "Error: unauthorized ");
+            }
             else {
                 return dataAccess.createAuth(userData.username());
             }
@@ -67,8 +71,20 @@ public class ChessService {
     public void listGames() {
     }
     // create game
-    public void createGame() {
-
+    public void createGame(String authToken, GameData game) throws ResponseException {
+        try {
+            if (game.gameName() == null) {
+                throw new ResponseException(400, "Error: bad request ");
+            }
+            else if (!dataAccess.getAuth(authToken)) {
+                throw new ResponseException(401, "Error: unauthorized ");
+            }
+            else {
+                dataAccess.createGame(game);
+            }
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Error: " + e.getMessage());
+        }
     }
     // join game
     public void joinGame() {
