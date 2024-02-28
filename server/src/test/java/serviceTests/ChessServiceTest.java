@@ -1,8 +1,8 @@
 package serviceTests;
 
 import dataAccess.MemoryDataAccess;
-import model.GameData;
-import model.UserData;
+import models.GameData;
+import models.UserData;
 import requests.JoinGameRequest;
 import org.junit.jupiter.api.Test;
 import server.ResponseException;
@@ -128,7 +128,7 @@ class ChessServiceTest {
     }
 
     @Test
-    void joinGameFailure() throws ResponseException {
+    void joinGameFailure() {
         var dao = new MemoryDataAccess();
         var service = new ChessService(dao);
         var game = new GameData(0, null, null, "testGame", "");

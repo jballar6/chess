@@ -1,6 +1,6 @@
 package dataAccess;
 
-import model.*;
+import models.*;
 
 import java.util.Collection;
 import java.util.HashMap;

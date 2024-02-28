@@ -3,7 +3,7 @@ package server;
 import com.google.gson.Gson;
 import dataAccess.MemoryDataAccess;
 import requests.JoinGameRequest;
-import model.*;
+import models.*;
 import service.ChessService;
 import spark.*;
 
