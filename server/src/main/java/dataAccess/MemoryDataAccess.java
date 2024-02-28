@@ -4,6 +4,7 @@ import model.*;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class MemoryDataAccess implements DataAccess {
     final private HashMap<String, AuthData> authTokens = new HashMap<>();
@@ -17,33 +18,42 @@ public class MemoryDataAccess implements DataAccess {
         users.clear();
     }
 
+    public String generateAuth() {
+        return UUID.randomUUID().toString();
+    }
+
     @Override
     public void registerUser(UserData user) throws DataAccessException {
         users.put(user.username(), user);
     }
 
     @Override
-    public boolean getUser(String username) throws DataAccessException {
+    public boolean userExists(String username) throws DataAccessException {
         return users.containsKey(username);
     }
 
     @Override
-    public AuthData createAuth(String username) {
-        var auth = new AuthData("test", username);
+    public UserData getUser(UserData user) throws DataAccessException {
+        return users.get(user);
+    }
 
-        authTokens.put(username, auth);
+    @Override
+    public AuthData createAuth(String username) {
+        var auth = new AuthData(generateAuth(), username);
+
+        authTokens.put(auth.authToken(), auth);
 
         return auth;
     }
 
     @Override
-    public boolean getAuth(String username) throws DataAccessException {
-        return authTokens.containsKey(username);
+    public boolean getAuth(String authToken) throws DataAccessException {
+        return authTokens.containsKey(authToken);
     }
 
     @Override
-    public void deleteAuth(String username) throws DataAccessException {
-        authTokens.remove(username);
+    public void deleteAuth(String authToken) throws DataAccessException {
+        authTokens.remove(authToken);
     }
 
     @Override

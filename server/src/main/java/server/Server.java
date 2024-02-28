@@ -4,11 +4,10 @@ import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
 import model.*;
-import response.registerSuccess;
 import service.ChessService;
 import spark.*;
 
-import java.nio.file.Paths;
+import java.util.Map;
 
 public class Server {
     private final ChessService service;
@@ -36,6 +35,7 @@ public class Server {
     }
 
     private void exceptionHandler(ResponseException e, Request request, Response response) {
+        response.body(new Gson().toJson(Map.of("message", e.getMessage())));
         response.status(e.StatusCode());
     }
 
@@ -56,25 +56,30 @@ public class Server {
         return null;
     }
 
-    private Object logoutUser(Request request, Response response) {
-        return null;
+    private Object logoutUser(Request request, Response response) throws ResponseException {
+        String authToken = request.headers("authorization");
+        service.logoutUser(authToken);
+        response.status(200);
+        return "{}";
     }
 
-    private Object loginUser(Request request, Response response) {
-        return null;
+    private Object loginUser(Request request, Response response) throws ResponseException {
+        var user = new Gson().fromJson(request.body(), UserData.class);
+        AuthData auth = service.loginUser(user);
+        response.status(200);
+        return new Gson().toJson(auth);
     }
 
-    private Object registerUser(Request request, Response response) throws DataAccessException {
+    private Object registerUser(Request request, Response response) throws ResponseException {
         var user = new Gson().fromJson(request.body(), UserData.class);
         AuthData auth = service.registerUser(user);
         response.status(200);
-        var responseMessage = new registerSuccess(auth.username(), auth.authToken());
-        return new Gson().toJson(responseMessage);
+        return new Gson().toJson(auth);
     }
 
     private Object clear(Request request, Response response) {
         service.clear();
         response.status(200);
-        return "";
+        return "{}";
     }
 }

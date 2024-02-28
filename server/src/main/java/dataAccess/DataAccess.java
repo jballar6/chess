@@ -11,7 +11,9 @@ public interface DataAccess {
 
     void registerUser(UserData user) throws DataAccessException;
 
-    boolean getUser(String user) throws DataAccessException;
+    boolean userExists(String user) throws DataAccessException;
+
+    UserData getUser(UserData user) throws DataAccessException;
 
     AuthData createAuth(String username) throws DataAccessException;
 
