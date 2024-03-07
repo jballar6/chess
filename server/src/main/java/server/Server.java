@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataAccess.MemoryDataAccess;
+import dataAccess.MySQLDataAccess;
 import requests.JoinGameRequest;
 import models.*;
 import service.ChessService;
@@ -10,10 +11,14 @@ import spark.*;
 import java.util.Map;
 
 public class Server {
-    private final ChessService service;
+    private ChessService service;
 
     public Server() {
-        this.service = new ChessService(new MemoryDataAccess());
+        try {
+            this.service = new ChessService(new MySQLDataAccess());
+        } catch (Throwable ex) {
+            System.out.printf("Unable to start server: %s%n", ex.getMessage());
+        }
     }
 
     public int run(int desiredPort) {

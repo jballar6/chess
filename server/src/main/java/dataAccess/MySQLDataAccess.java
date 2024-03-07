@@ -11,7 +11,7 @@ import static java.sql.Types.NULL;
 
 public class MySQLDataAccess implements DataAccess {
 
-    public MySQLDataAccess() throws DataAccessException, ResponseException {
+    public MySQLDataAccess() throws ResponseException {
         configureDatabase();
     }
 
@@ -103,12 +103,12 @@ public class MySQLDataAccess implements DataAccess {
               `id` int NOT NULL AUTO_INCREMENT,
               `name` varchar(256) NOT NULL,
               `auth` int,
-              `json` TEXT DEFAULT NULL,
               PRIMARY KEY (`id`),
               INDEX(auth),
               INDEX(name)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-            
+            """,
+            """
             CREATE TABLE IF NOT EXISTS  games (
               `id` int NOT NULL AUTO_INCREMENT,
               `name` varchar(256) NOT NULL,
@@ -116,8 +116,7 @@ public class MySQLDataAccess implements DataAccess {
               `whiteplayer` int,
               `observers` int,
               `json` TEXT DEFAULT NULL,
-              PRIMARY KEY (`id`),
-              INDEX(type)
+              PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
