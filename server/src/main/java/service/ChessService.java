@@ -8,8 +8,6 @@ import responses.CreateGameResponse;
 import responses.ListGamesResponse;
 import server.ResponseException;
 
-import javax.xml.crypto.Data;
-
 public class ChessService {
 
     private final DataAccess dataAccess;

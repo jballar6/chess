@@ -1,10 +1,12 @@
 package dataAccess;
 
+import com.google.gson.Gson;
 import models.*;
 import server.ResponseException;
 
 import java.sql.*;
 import java.util.Collection;
+import java.util.UUID;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -15,11 +17,17 @@ public class MySQLDataAccess implements DataAccess {
         configureDatabase();
     }
 
+    public String generateAuth() {
+        return UUID.randomUUID().toString();
+    }
+
     @Override
     public void clear() throws DataAccessException {
         try {
-            var statement = "TRUNCATE users, games";
-            executeUpdate(statement);
+            var statements = new String[]{"TRUNCATE users", "TRUNCATE authdata", "TRUNCATE games"};
+            for (var statement : statements) {
+                executeUpdate(statement);
+            }
         } catch (ResponseException e) {
             throw new DataAccessException(e.getMessage());
         }
@@ -27,7 +35,12 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public void registerUser(UserData user) throws DataAccessException {
-
+        try {
+            var statement = "INSERT INTO users (name, password, email) VALUES (?, ?, ?)";
+            executeUpdate(statement, user.username(), user.password(), user.email());
+        } catch (ResponseException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
@@ -42,7 +55,14 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public AuthData createAuth(String username) throws DataAccessException {
-        return null;
+        try {
+            var auth = new AuthData(generateAuth(), username);
+            var statement = "INSERT INTO authData (auth, name) VALUES (?, ?)";
+            executeUpdate(statement, auth.authToken(), auth.username());
+            return auth;
+        } catch (ResponseException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
@@ -107,8 +127,17 @@ public class MySQLDataAccess implements DataAccess {
             CREATE TABLE IF NOT EXISTS  users (
               `id` int NOT NULL AUTO_INCREMENT,
               `name` varchar(256) NOT NULL,
-              `auth` int,
+              `password` varchar(256) NOT NULL,
+              `email` varchar(256) NOT NULL,
               PRIMARY KEY (`id`),
+              INDEX(name)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+            """,
+            """
+            CREATE TABLE IF NOT EXISTS  authdata (
+              `auth` varchar(256) NOT NULL,
+              `name` varchar(256) NOT NULL,
+              PRIMARY KEY (`auth`),
               INDEX(auth),
               INDEX(name)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
