@@ -2,6 +2,7 @@ package dataAccess;
 
 import com.google.gson.Gson;
 import models.*;
+import org.springframework.security.core.parameters.P;
 import server.ResponseException;
 
 import java.sql.*;
@@ -36,8 +37,9 @@ public class MySQLDataAccess implements DataAccess {
     @Override
     public void registerUser(UserData user) throws DataAccessException {
         try {
-            var statement = "INSERT INTO users (name, password, email) VALUES (?, ?, ?)";
-            executeUpdate(statement, user.username(), user.password(), user.email());
+            var statement = "INSERT INTO users (name, password, email, json) VALUES (?, ?, ?, ?)";
+            var json = new Gson().toJson(user);
+            executeUpdate(statement, user.username(), user.password(), user.email(), json);
         } catch (ResponseException e) {
             throw new DataAccessException(e.getMessage());
         }
@@ -45,12 +47,40 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public boolean userExists(String user) throws DataAccessException {
-        return false;
+        try (var connection = DatabaseManager.getConnection()) {
+            var statement = "SELECT name FROM users WHERE name=?";
+            try (var ps = connection.prepareStatement(statement)) {
+                ps.setString(1, user);
+                try (var rs = ps.executeQuery()) {
+                    return rs.next();
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
     public UserData getUser(UserData user) throws DataAccessException {
+        try (var connection = DatabaseManager.getConnection()) {
+            var statement = "SELECT name, json FROM users WHERE name=?";
+            try (var ps = connection.prepareStatement(statement)) {
+                ps.setString(1, user.username());
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readUser(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
         return null;
+    }
+
+    private UserData readUser(ResultSet rs) throws SQLException {
+        var json = rs.getString("json");
+        return new Gson().fromJson(json, UserData.class);
     }
 
     @Override
@@ -125,18 +155,18 @@ public class MySQLDataAccess implements DataAccess {
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  users (
-              `id` int NOT NULL AUTO_INCREMENT,
               `name` varchar(256) NOT NULL,
               `password` varchar(256) NOT NULL,
               `email` varchar(256) NOT NULL,
-              PRIMARY KEY (`id`),
-              INDEX(name)
+              `json` TEXT DEFAULT NULL,
+              PRIMARY KEY (`name`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """,
             """
             CREATE TABLE IF NOT EXISTS  authdata (
               `auth` varchar(256) NOT NULL,
               `name` varchar(256) NOT NULL,
+              `json` TEXT DEFAULT NULL,
               PRIMARY KEY (`auth`),
               INDEX(auth),
               INDEX(name)
