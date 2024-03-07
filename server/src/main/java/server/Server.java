@@ -93,7 +93,7 @@ public class Server {
         return new Gson().toJson(auth);
     }
 
-    private Object clear(Request request, Response response) {
+    private Object clear(Request request, Response response) throws ResponseException {
         service.clear();
         response.status(200);
         return "{}";

@@ -16,8 +16,13 @@ public class MySQLDataAccess implements DataAccess {
     }
 
     @Override
-    public void clear() {
-
+    public void clear() throws DataAccessException {
+        try {
+            var statement = "TRUNCATE users, games";
+            executeUpdate(statement);
+        } catch (ResponseException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override

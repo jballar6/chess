@@ -38,17 +38,17 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public void registerUser(UserData user) throws DataAccessException {
+    public void registerUser(UserData user) {
         users.put(user.username(), user);
     }
 
     @Override
-    public boolean userExists(String username) throws DataAccessException {
+    public boolean userExists(String username) {
         return users.containsKey(username);
     }
 
     @Override
-    public UserData getUser(UserData user) throws DataAccessException {
+    public UserData getUser(UserData user) {
         return users.get(user.username());
     }
 
@@ -62,27 +62,27 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public boolean getAuth(String authToken) throws DataAccessException {
+    public boolean getAuth(String authToken) {
         return authTokens.containsKey(authToken);
     }
 
     @Override
-    public void deleteAuth(String authToken) throws DataAccessException {
+    public void deleteAuth(String authToken) {
         authTokens.remove(authToken);
     }
 
     @Override
-    public Collection<GameData> listGames() throws DataAccessException {
+    public Collection<GameData> listGames() {
         return games.values();
     }
 
     @Override
-    public GameData getGame(int gameID) throws DataAccessException {
+    public GameData getGame(int gameID) {
         return games.get(gameID);
     }
 
     @Override
-    public GameData createGame(GameData game) throws DataAccessException {
+    public GameData createGame(GameData game) {
         nextId++;
         game = game.setGameID(nextId);
         games.put(nextId, game);
@@ -90,7 +90,7 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public void joinGame(String authToken, int gameID, String playerColor) throws DataAccessException {
+    public void joinGame(String authToken, int gameID, String playerColor) {
         var game = games.get(gameID);
         var user = authTokens.get(authToken);
         if (Objects.equals(playerColor, "BLACK")) {

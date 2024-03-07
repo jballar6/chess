@@ -8,6 +8,8 @@ import responses.CreateGameResponse;
 import responses.ListGamesResponse;
 import server.ResponseException;
 
+import javax.xml.crypto.Data;
+
 public class ChessService {
 
     private final DataAccess dataAccess;
@@ -16,8 +18,12 @@ public class ChessService {
         this.dataAccess = dataAccess;
     }
 
-    public void clear() {
-        dataAccess.clear();
+    public void clear() throws ResponseException {
+        try {
+            dataAccess.clear();
+        } catch (DataAccessException e) {
+            throw new ResponseException(500, "Error: " + e.getMessage());
+        }
     }
 
     public AuthData registerUser(UserData userData) throws ResponseException {
