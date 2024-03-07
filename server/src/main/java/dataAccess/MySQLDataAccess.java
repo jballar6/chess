@@ -2,7 +2,6 @@ package dataAccess;
 
 import com.google.gson.Gson;
 import models.*;
-import org.springframework.security.core.parameters.P;
 import server.ResponseException;
 
 import java.sql.*;
@@ -96,13 +95,53 @@ public class MySQLDataAccess implements DataAccess {
     }
 
     @Override
-    public boolean getAuth(String username) throws DataAccessException {
-        return false;
+    public boolean getAuth(String authToken) throws DataAccessException {
+        try (var connection = DatabaseManager.getConnection()) {
+            var statement = "SELECT auth FROM authdata WHERE auth=?";
+            try (var ps = connection.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (var rs = ps.executeQuery()) {
+                    return rs.next();
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public void deleteAuth(String username) throws DataAccessException {
+    public void deleteAuth(String authToken) throws DataAccessException {
+        try {
+            var statement = "DELETE FROM authdata WHERE auth=?";
+            executeUpdate(statement, authToken);
+        } catch (ResponseException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 
+    @Override
+    public boolean getAuthFromUser(String username) throws DataAccessException {
+        try (var connection = DatabaseManager.getConnection()) {
+            var statement = "SELECT name, auth FROM authdata WHERE name=?";
+            try (var ps = connection.prepareStatement(statement)) {
+                ps.setString(1, username);
+                try (var rs = ps.executeQuery()) {
+                    return rs.next();
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteAuthFromUser(String username) throws DataAccessException {
+        try {
+            var statement = "DELETE FROM authdata WHERE name=?";
+            executeUpdate(statement, username);
+        } catch (ResponseException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
@@ -167,9 +206,8 @@ public class MySQLDataAccess implements DataAccess {
               `auth` varchar(256) NOT NULL,
               `name` varchar(256) NOT NULL,
               `json` TEXT DEFAULT NULL,
-              PRIMARY KEY (`auth`),
-              INDEX(auth),
-              INDEX(name)
+              PRIMARY KEY (`name`),
+              INDEX(auth)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """,
             """

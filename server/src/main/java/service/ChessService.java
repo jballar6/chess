@@ -52,9 +52,10 @@ public class ChessService {
             if (!user.password().equals(userData.password())) {
                 throw new ResponseException(401, "Error: unauthorized ");
             }
-            else {
-                return dataAccess.createAuth(userData.username());
+            if (dataAccess.getAuthFromUser(userData.username())) {
+                dataAccess.deleteAuthFromUser(userData.username());
             }
+            return dataAccess.createAuth(userData.username());
         } catch (DataAccessException e) {
             throw new ResponseException(500, "Error: " + e.getMessage());
         }

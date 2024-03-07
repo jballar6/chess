@@ -72,6 +72,16 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
+    public boolean getAuthFromUser(String username) throws DataAccessException {
+        throw new DataAccessException("Incorrect data needed, use authToken");
+    }
+
+    @Override
+    public void deleteAuthFromUser(String username) throws DataAccessException {
+        throw new DataAccessException("Incorrect data needed, use authToken");
+    }
+
+    @Override
     public Collection<GameData> listGames() {
         return games.values();
     }

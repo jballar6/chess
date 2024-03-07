@@ -22,6 +22,10 @@ public interface DataAccess {
 
     void deleteAuth(String username) throws DataAccessException;
 
+    boolean getAuthFromUser(String username) throws DataAccessException;
+
+    void deleteAuthFromUser(String username) throws DataAccessException;
+
     Collection<GameData> listGames() throws DataAccessException;
     GameData getGame(int gameID) throws DataAccessException;
 
