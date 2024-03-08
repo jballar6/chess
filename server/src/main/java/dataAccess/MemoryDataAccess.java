@@ -33,7 +33,7 @@ public class MemoryDataAccess implements DataAccess {
         users.clear();
     }
 
-    public String generateAuth() {
+    private String generateAuth() {
         return UUID.randomUUID().toString();
     }
 

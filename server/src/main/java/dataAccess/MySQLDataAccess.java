@@ -7,6 +7,7 @@ import server.ResponseException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -19,7 +20,7 @@ public class MySQLDataAccess implements DataAccess {
         configureDatabase();
     }
 
-    public String generateAuth() {
+    private String generateAuth() {
         return UUID.randomUUID().toString();
     }
 
@@ -82,6 +83,28 @@ public class MySQLDataAccess implements DataAccess {
     private UserData readUser(ResultSet rs) throws SQLException {
         var json = rs.getString("json");
         return new Gson().fromJson(json, UserData.class);
+    }
+
+    private AuthData getUserFromAuth(String authToken) throws DataAccessException {
+        try (var connection = DatabaseManager.getConnection()) {
+            var statement = "SELECT json FROM authdata WHERE auth=?";
+            try (var ps = connection.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readAuth(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return null;
+    }
+
+    private AuthData readAuth(ResultSet rs) throws SQLException {
+        var json = rs.getString("json");
+        return new Gson().fromJson(json, AuthData.class);
     }
 
     @Override
@@ -198,7 +221,21 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public void joinGame(String authToken, int gameID, String playerColor) throws DataAccessException {
+        try {
+            var user = getUserFromAuth(authToken);
+            String statement;
 
+            if (Objects.equals(playerColor, "BLACK")) {
+                statement = "UPDATE games SET blackplayer = ? WHERE id=?";
+            } else {
+                statement = "UPDATE games SET whiteplayer = ? WHERE id=?";
+            }
+            if (user != null) {
+                executeUpdate(statement, user.username(), gameID);
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     private GameData readGame(ResultSet rs) throws SQLException {
@@ -256,9 +293,8 @@ public class MySQLDataAccess implements DataAccess {
             CREATE TABLE IF NOT EXISTS  games (
               `id` int NOT NULL AUTO_INCREMENT,
               `name` varchar(256) NOT NULL,
-              `blackplayer` int,
-              `whiteplayer` int,
-              `observers` int,
+              `blackplayer` varchar(256),
+              `whiteplayer` varchar(256),
               `json` TEXT DEFAULT NULL,
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
