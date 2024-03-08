@@ -3,6 +3,7 @@ package service;
 import dataAccess.DataAccess;
 import dataAccess.DataAccessException;
 import models.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import requests.JoinGameRequest;
 import responses.CreateGameResponse;
 import responses.ListGamesResponse;
@@ -49,7 +50,8 @@ public class ChessService {
                 throw new ResponseException(401, "Error: unauthorized ");
             }
             var user = dataAccess.getUser(userData);
-            if (!user.password().equals(userData.password())) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            if (!encoder.matches(userData.password(), user.password())) {
                 throw new ResponseException(401, "Error: unauthorized ");
             }
             if (dataAccess.getAuthFromUser(userData.username())) {

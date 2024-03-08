@@ -2,6 +2,7 @@ package dataAccess;
 
 import com.google.gson.Gson;
 import models.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import server.ResponseException;
 
 import java.sql.*;
@@ -24,6 +25,11 @@ public class MySQLDataAccess implements DataAccess {
         return UUID.randomUUID().toString();
     }
 
+    private String encrpytPassword(String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(password);
+    }
+
     @Override
     public void clear() throws DataAccessException {
         try {
@@ -40,6 +46,8 @@ public class MySQLDataAccess implements DataAccess {
     public void registerUser(UserData user) throws DataAccessException {
         try {
             var statement = "INSERT INTO users (name, password, email, json) VALUES (?, ?, ?, ?)";
+            var password = encrpytPassword(user.password());
+            user = user.setPassword(password);
             var json = new Gson().toJson(user);
             executeUpdate(statement, user.username(), user.password(), user.email(), json);
         } catch (ResponseException e) {
@@ -111,8 +119,9 @@ public class MySQLDataAccess implements DataAccess {
     public AuthData createAuth(String username) throws DataAccessException {
         try {
             var auth = new AuthData(generateAuth(), username);
-            var statement = "INSERT INTO authData (auth, name) VALUES (?, ?)";
-            executeUpdate(statement, auth.authToken(), auth.username());
+            var statement = "INSERT INTO authData (auth, name, json) VALUES (?, ?, ?)";
+            var json = new Gson().toJson(auth);
+            executeUpdate(statement, auth.authToken(), auth.username(), json);
             return auth;
         } catch (ResponseException e) {
             throw new DataAccessException(e.getMessage());
@@ -223,15 +232,20 @@ public class MySQLDataAccess implements DataAccess {
     public void joinGame(String authToken, int gameID, String playerColor) throws DataAccessException {
         try {
             var user = getUserFromAuth(authToken);
+            var game = getGame(gameID);
             String statement;
 
-            if (Objects.equals(playerColor, "BLACK")) {
-                statement = "UPDATE games SET blackplayer = ? WHERE id=?";
-            } else {
-                statement = "UPDATE games SET whiteplayer = ? WHERE id=?";
-            }
             if (user != null) {
-                executeUpdate(statement, user.username(), gameID);
+                if (Objects.equals(playerColor, "BLACK")) {
+                    game = game.setBlackUsername(user.username());
+                    statement = "UPDATE games SET blackplayer = ?, json = ? WHERE id=?";
+                } else {
+                    game = game.setWhiteUsername(user.username());
+                    statement = "UPDATE games SET whiteplayer = ?, json = ? WHERE id=?";
+                }
+
+                var json = new Gson().toJson(game);
+                executeUpdate(statement, user.username(), json, gameID);
             }
         } catch (Exception e) {
             throw new DataAccessException(e.getMessage());
