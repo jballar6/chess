@@ -44,7 +44,6 @@ public class ChessService {
     }
 
     public AuthData loginUser(UserData userData) throws ResponseException {
-        //return the username and authToken
         try {
             if (!dataAccess.userExists(userData.username())) {
                 throw new ResponseException(401, "Error: unauthorized ");
@@ -53,9 +52,6 @@ public class ChessService {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             if (!encoder.matches(userData.password(), user.password())) {
                 throw new ResponseException(401, "Error: unauthorized ");
-            }
-            if (dataAccess.getAuthFromUser(userData.username())) {
-                dataAccess.deleteAuthFromUser(userData.username());
             }
             return dataAccess.createAuth(userData.username());
         } catch (DataAccessException e) {

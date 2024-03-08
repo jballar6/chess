@@ -300,8 +300,8 @@ public class MySQLDataAccess implements DataAccess {
               `auth` varchar(256) NOT NULL,
               `name` varchar(256) NOT NULL,
               `json` TEXT DEFAULT NULL,
-              PRIMARY KEY (`name`),
-              INDEX(auth)
+              PRIMARY KEY (`auth`),
+              INDEX(name)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """,
             """
