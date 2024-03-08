@@ -44,6 +44,60 @@ class DataAccessTest {
     }
 
     @Test
+    void userExistsSuccess() throws ResponseException {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        var testUser1 = new UserData("user", "pass", "email@email.com");
+        service.registerUser(testUser1);
+        assertThrows(ResponseException.class, () -> service.registerUser(testUser1));
+    }
+
+    @Test
+    void userExistsFailure() throws ResponseException {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        var testUser1 = new UserData("user", "pass", "email@email.com");
+        service.registerUser(testUser1);
+        assertThrows(ResponseException.class, () -> service.registerUser(testUser1));
+    }
+
+    @Test
+    void getUserSuccess() throws ResponseException {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        var testUser1 = new UserData("user", "pass", "email@email.com");
+        service.registerUser(testUser1);
+        assertThrows(ResponseException.class, () -> service.registerUser(testUser1));
+    }
+
+    @Test
+    void getUserFailure() throws ResponseException {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        var testUser1 = new UserData("user", "pass", "email@email.com");
+        service.registerUser(testUser1);
+        assertThrows(ResponseException.class, () -> service.registerUser(testUser1));
+    }
+
+    @Test
+    void getGameSuccess() throws ResponseException {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        var testUser1 = new UserData("user", "pass", "email@email.com");
+        service.registerUser(testUser1);
+        assertThrows(ResponseException.class, () -> service.registerUser(testUser1));
+    }
+
+    @Test
+    void getGameFailure() throws ResponseException {
+        var dao = new MemoryDataAccess();
+        var service = new ChessService(dao);
+        var testUser1 = new UserData("user", "pass", "email@email.com");
+        service.registerUser(testUser1);
+        assertThrows(ResponseException.class, () -> service.registerUser(testUser1));
+    }
+
+    @Test
     void loginUserSuccess() throws ResponseException {
         var dao = new MySQLDataAccess();
         var service = new ChessService(dao);
