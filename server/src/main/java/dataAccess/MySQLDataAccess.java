@@ -32,6 +32,7 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public void clear() throws DataAccessException {
+        nextId = 0;
         try {
             var statements = new String[]{"TRUNCATE users", "TRUNCATE authdata", "TRUNCATE games"};
             for (var statement : statements) {
