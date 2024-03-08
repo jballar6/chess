@@ -1,6 +1,7 @@
 package dataAccessTests;
 
 import dataAccess.MemoryDataAccess;
+import dataAccess.MySQLDataAccess;
 import models.GameData;
 import models.UserData;
 import requests.JoinGameRequest;
@@ -44,7 +45,7 @@ class DataAccessTest {
 
     @Test
     void loginUserSuccess() throws ResponseException {
-        var dao = new MemoryDataAccess();
+        var dao = new MySQLDataAccess();
         var service = new ChessService(dao);
         var testUser1 = new UserData("user", "pass", "email@email.com");
         service.registerUser(testUser1);
