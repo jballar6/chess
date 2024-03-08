@@ -120,7 +120,7 @@ public class MySQLDataAccess implements DataAccess {
     public AuthData createAuth(String username) throws DataAccessException {
         try {
             var auth = new AuthData(generateAuth(), username);
-            var statement = "INSERT INTO authData (auth, name, json) VALUES (?, ?, ?)";
+            var statement = "INSERT INTO authdata (auth, name, json) VALUES (?, ?, ?)";
             var json = new Gson().toJson(auth);
             executeUpdate(statement, auth.authToken(), auth.username(), json);
             return auth;
