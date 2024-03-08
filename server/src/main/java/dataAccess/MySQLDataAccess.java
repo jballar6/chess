@@ -5,6 +5,7 @@ import models.*;
 import server.ResponseException;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class MySQLDataAccess implements DataAccess {
+    private Integer nextId = 0;
 
     public MySQLDataAccess() throws ResponseException {
         configureDatabase();
@@ -146,22 +148,62 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public Collection<GameData> listGames() throws DataAccessException {
-        return null;
+        var result = new ArrayList<GameData>();
+        try (var connection = DatabaseManager.getConnection()) {
+            var statement = "SELECT id, json FROM games";
+            try (var ps = connection.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        result.add(readGame(rs));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return result;
     }
 
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
+        try (var connection = DatabaseManager.getConnection()) {
+            var statement = "SELECT json FROM games WHERE id=?";
+            try (var ps = connection.prepareStatement(statement)) {
+                ps.setInt(1, gameID);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return readGame(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(e.getMessage());
+        }
         return null;
     }
 
     @Override
     public GameData createGame(GameData game) throws DataAccessException {
-        return null;
+        try {
+            var statement = "INSERT INTO games (name, json) VALUES (?, ?)";
+            nextId++;
+            game = game.setGameID(nextId);
+            var json = new Gson().toJson(game);
+            var id = executeUpdate(statement, game.gameName(), json);
+            return new GameData(id, null, null, game.gameName(), null);
+        } catch (ResponseException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
     public void joinGame(String authToken, int gameID, String playerColor) throws DataAccessException {
 
+    }
+
+    private GameData readGame(ResultSet rs) throws SQLException {
+        var json = rs.getString("json");
+        return new Gson().fromJson(json, GameData.class);
     }
 
     private int executeUpdate(String statement, Object... params) throws ResponseException {
