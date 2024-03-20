@@ -7,7 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import requests.JoinGameRequest;
 import responses.CreateGameResponse;
 import responses.ListGamesResponse;
-import server.ResponseException;
+import exception.ResponseException;
 
 public class ChessService {
 

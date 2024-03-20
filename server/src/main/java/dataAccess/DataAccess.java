@@ -3,7 +3,6 @@ package dataAccess;
 import models.AuthData;
 import models.GameData;
 import models.UserData;
-import server.ResponseException;
 
 import java.util.Collection;
 

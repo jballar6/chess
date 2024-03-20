@@ -3,7 +3,7 @@ package dataAccess;
 import com.google.gson.Gson;
 import models.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import server.ResponseException;
+import exception.ResponseException;
 
 import java.sql.*;
 import java.util.ArrayList;

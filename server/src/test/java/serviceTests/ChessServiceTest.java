@@ -5,7 +5,7 @@ import models.GameData;
 import models.UserData;
 import requests.JoinGameRequest;
 import org.junit.jupiter.api.Test;
-import server.ResponseException;
+import exception.ResponseException;
 import service.ChessService;
 
 import static org.junit.jupiter.api.Assertions.*;
