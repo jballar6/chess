@@ -1,5 +1,6 @@
 import chess.*;
 import ui.Repl;
+import static ui.EscapeSequences.*;
 
 public class ClientMain {
     public static void main(String[] args) {

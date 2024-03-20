@@ -1,6 +1,6 @@
 package ui;
 
-import ui.EscapeSequences.*;
+import static ui.EscapeSequences.*;
 import java.util.Scanner;
 
 public class Repl {
@@ -11,7 +11,7 @@ public class Repl {
     }
 
     public void run() {
-        System.out.println("Welcome to Online Chess! Sign in to start or say \"help\"");
+        System.out.println(SET_TEXT_COLOR_BLUE + "Welcome to Online Chess! Sign in to start or say \"help\"");
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
