@@ -1,5 +1,6 @@
 package ui;
 
+import com.google.gson.Gson;
 import exception.ResponseException;
 import models.AuthData;
 
@@ -74,8 +75,15 @@ public class ChessClient {
         throw new ResponseException(400, "Expected: <GAMENAME>");
     }
 
-    private String listGames(String[] params) {
-        return null;
+    private String listGames(String[] params) throws ResponseException {
+        assertSignedIn();
+        var listGamesResponse = server.listGames(visitorData.authToken());
+        var result = new StringBuilder();
+        var gson = new Gson();
+        for (var game : listGamesResponse.games()) {
+            result.append(gson.toJson(game)).append('\n');
+        }
+        return result.toString();
     }
 
     private String logout() throws ResponseException {
