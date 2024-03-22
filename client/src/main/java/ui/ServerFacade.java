@@ -2,6 +2,8 @@ package ui;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+import models.AuthData;
+import models.UserData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +16,12 @@ public class ServerFacade {
 
     public ServerFacade(String serverUrl) {
         this.serverUrl = serverUrl;
+    }
+
+    public AuthData registerUser(String username, String password, String email) throws ResponseException {
+        var path = "/user";
+        var request = new UserData(username, password, email);
+        return this.makeRequest("POST", path, request, AuthData.class);
     }
     
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {

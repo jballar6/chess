@@ -10,7 +10,7 @@ public class ChessClient {
     private final String serverUrl;
     private State state = State.SIGNEDOUT;
 
-    public ChessClient(String serverUrl, Repl repl) {
+    public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
     }
@@ -31,10 +31,8 @@ public class ChessClient {
                 case "quit" -> "quit";
                 default -> help();
             };
-//        } catch (ResponseException e) {
-//            return e.getMessage();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (ResponseException e) {
+            return e.getMessage();
         }
     }
 
@@ -83,7 +81,14 @@ public class ChessClient {
         return null;
     }
 
-    private String register(String[] params) {
-        return null;
+    private String register(String[] params) throws ResponseException {
+        if (params.length == 3) {
+            var username = params[0];
+            var password = params[1];
+            var email = params[2];
+            var result = server.registerUser(username, password, email);
+            return String.format("User registered: %s.", result.username());
+        }
+        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
     }
 }
