@@ -53,7 +53,14 @@ public class ServerFacade {
 
     public void joinGame(String teamColor, Integer gameID, String authToken) throws ResponseException {
         var path = "/game";
+        teamColor = teamColor.toUpperCase();
         var request = new JoinGameRequest(teamColor, gameID);
+        this.makeRequest("PUT", path, authToken, request, null);
+    }
+
+    public void observeGame(Integer gameID, String authToken) throws ResponseException {
+        var path = "/game";
+        var request = new JoinGameRequest(null, gameID);
         this.makeRequest("PUT", path, authToken, request, null);
     }
     

@@ -20,10 +20,23 @@ public class ServerFacadeTests {
         server.stop();
     }
 
+    @Test
+    public void sampleTest() {
+        Assertions.assertTrue(true);
+    }
 
     @Test
     public void sampleTest() {
         Assertions.assertTrue(true);
     }
 
+    @Test
+    public void sampleTest() {
+        Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void sampleTest() {
+        Assertions.assertTrue(true);
+    }
 }

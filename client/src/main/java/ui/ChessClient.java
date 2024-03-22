@@ -57,8 +57,36 @@ public class ChessClient {
         }
     }
 
-    private String observeGame(String[] params) {
-        return null;
+    private String observeGame(String[] params) throws ResponseException {
+        assertSignedIn();
+        if (params.length == 1) {
+            var gameID = params[0];
+            server.observeGame(Integer.valueOf(gameID), visitorData.authToken());
+            return """
+                   h g f e d c b a
+                1 |r|n|b|k|q|b|n|r| 1
+                2 |p|p|p|p|p|p|p|p| 2
+                3 | | | | | | | | | 3
+                4 | | | | | | | | | 4
+                5 | | | | | | | | | 5
+                6 | | | | | | | | | 6
+                7 |P|P|P|P|P|P|P|P| 7
+                8 |R|N|B|K|Q|B|N|R| 8
+                   h g f e d c b a
+                
+                   a b c d e f g h
+                8 |R|N|B|Q|K|B|N|R| 8
+                7 |P|P|P|P|P|P|P|P| 7
+                6 | | | | | | | | | 6
+                5 | | | | | | | | | 5
+                4 | | | | | | | | | 4
+                3 | | | | | | | | | 3
+                2 |p|p|p|p|p|p|p|p| 2
+                1 |r|n|b|q|k|b|n|r| 1
+                   a b c d e f g h
+                """;
+        }
+        throw new ResponseException(400, "Expected: <GAMEID>");
     }
 
     private String joinGame(String[] params) throws ResponseException {
@@ -71,7 +99,30 @@ public class ChessClient {
             }
 
             server.joinGame(team, Integer.valueOf(gameID), visitorData.authToken());
-            return String.format("Joining game #%d", gameID);
+//            String.format("Joining game #%d", Integer.parseInt(gameID));
+            return """
+                   h g f e d c b a
+                1 |r|n|b|k|q|b|n|r| 1
+                2 |p|p|p|p|p|p|p|p| 2
+                3 | | | | | | | | | 3
+                4 | | | | | | | | | 4
+                5 | | | | | | | | | 5
+                6 | | | | | | | | | 6
+                7 |P|P|P|P|P|P|P|P| 7
+                8 |R|N|B|K|Q|B|N|R| 8
+                   h g f e d c b a
+                
+                   a b c d e f g h
+                8 |R|N|B|Q|K|B|N|R| 8
+                7 |P|P|P|P|P|P|P|P| 7
+                6 | | | | | | | | | 6
+                5 | | | | | | | | | 5
+                4 | | | | | | | | | 4
+                3 | | | | | | | | | 3
+                2 |p|p|p|p|p|p|p|p| 2
+                1 |r|n|b|q|k|b|n|r| 1
+                   a b c d e f g h
+                """;
         }
         throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK|<empty>]");
     }
