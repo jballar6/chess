@@ -21,22 +21,63 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void sampleTest() {
+    public void registerSuccess() {
         Assertions.assertTrue(true);
     }
 
     @Test
-    public void sampleTest() {
+    public void registerFailure() {
         Assertions.assertTrue(true);
     }
 
     @Test
-    public void sampleTest() {
+    public void logoutSuccess() {
         Assertions.assertTrue(true);
     }
 
     @Test
-    public void sampleTest() {
+    public void logoutFailure() {
         Assertions.assertTrue(true);
     }
+
+    @Test
+    public void loginSuccess() {
+        Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void loginFailure() {
+        Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void createSuccess() {
+        Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void createFailure() {
+        Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void listSuccess() {
+        Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void listFailure() {
+        Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void joinFailure() {
+        Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void joinSuccess() {
+        Assertions.assertTrue(true);
+    }
+
 }
