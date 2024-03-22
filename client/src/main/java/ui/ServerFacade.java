@@ -22,19 +22,28 @@ public class ServerFacade {
     public AuthData registerUser(String username, String password, String email) throws ResponseException {
         var path = "/user";
         var request = new UserData(username, password, email);
-        return this.makeRequest("POST", path, request, AuthData.class);
+        return this.makeRequest("POST", path, null, request, AuthData.class);
     }
 
     public AuthData loginUser(String username, String password) throws ResponseException {
         var path = "/session";
         var request = new LoginRequest(username, password);
-        return this.makeRequest("POST", path, request, AuthData.class);
+        return this.makeRequest("POST", path, null, request, AuthData.class);
+    }
+
+    public void logoutUser(String authToken) throws ResponseException {
+        var path = "/session";
+        var header = String.format("authorization: %s", authToken);
+        this.makeRequest("DELETE", path, authToken, null, null);
     }
     
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(String method, String path, String authToken, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            if (authToken != null) {
+                http.setRequestProperty("authorization", authToken);
+            }
             http.setRequestMethod(method);
             http.setDoOutput(true);
 

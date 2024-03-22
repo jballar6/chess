@@ -1,18 +1,17 @@
 package ui;
 
 import exception.ResponseException;
+import models.AuthData;
+
 import java.util.Arrays;
-import static ui.EscapeSequences.*;
 
 public class ChessClient {
-    private String visitorName = null;
+    private AuthData visitorData = null;
     private final ServerFacade server;
-    private final String serverUrl;
     private State state = State.SIGNEDOUT;
 
     public ChessClient(String serverUrl) {
         server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
     }
 
     public String eval(String input) {
@@ -23,7 +22,7 @@ public class ChessClient {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "login" -> login(params);
-                case "logout" -> logout(params);
+                case "logout" -> logout();
                 case "list" -> listGames(params);
                 case "create" -> createGame(params);
                 case "join" -> joinGame(params);
@@ -73,16 +72,23 @@ public class ChessClient {
         return null;
     }
 
-    private String logout(String[] params) {
-        return null;
+    private String logout() throws ResponseException {
+        assertSignedIn();
+        server.logoutUser(visitorData.authToken());
+        state = State.SIGNEDOUT;
+        return String.format("%s logged out.", visitorData.username());
     }
 
     private String login(String[] params) throws ResponseException {
+        if (state == State.SIGNEDIN) {
+            return "You are already logged in on this device!";
+        }
         if (params.length == 2) {
             var username = params[0];
             var password = params[1];
             var result = server.loginUser(username, password);
             state = State.SIGNEDIN;
+            visitorData = result;
             return String.format("User logged in: %s.", result.username());
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");
@@ -94,8 +100,16 @@ public class ChessClient {
             var password = params[1];
             var email = params[2];
             var result = server.registerUser(username, password, email);
+            state = State.SIGNEDIN;
+            visitorData = result;
             return String.format("User registered: %s.", result.username());
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
+    }
+
+    private void assertSignedIn() throws ResponseException {
+        if (state == State.SIGNEDOUT) {
+            throw new ResponseException(400, "You must sign in to perform that action.");
+        }
     }
 }
