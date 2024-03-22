@@ -77,8 +77,15 @@ public class ChessClient {
         return null;
     }
 
-    private String login(String[] params) {
-        return null;
+    private String login(String[] params) throws ResponseException {
+        if (params.length == 2) {
+            var username = params[0];
+            var password = params[1];
+            var result = server.loginUser(username, password);
+            state = State.SIGNEDIN;
+            return String.format("User logged in: %s.", result.username());
+        }
+        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");
     }
 
     private String register(String[] params) throws ResponseException {
