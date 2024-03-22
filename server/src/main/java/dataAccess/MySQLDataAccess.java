@@ -220,7 +220,11 @@ public class MySQLDataAccess implements DataAccess {
         try {
             var statement = "INSERT INTO games (name, json) VALUES (?, ?)";
             var id = getGameCount();
-            game = game.setGameID(id);
+            if (id == 0) {
+                game = game.setGameID(1);
+            } else {
+                game = game.setGameID(id+1);
+            }
             var json = new Gson().toJson(game);
             executeUpdate(statement, game.gameName(), json);
             return game;
