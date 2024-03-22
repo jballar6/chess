@@ -5,6 +5,7 @@ import exception.ResponseException;
 import models.AuthData;
 import models.GameData;
 import models.UserData;
+import requests.JoinGameRequest;
 import requests.LoginRequest;
 import responses.CreateGameResponse;
 import responses.ListGamesResponse;
@@ -48,6 +49,12 @@ public class ServerFacade {
     public ListGamesResponse listGames(String authToken) throws ResponseException {
         var path = "/game";
         return this.makeRequest("GET", path, authToken, null, ListGamesResponse.class);
+    }
+
+    public void joinGame(String teamColor, Integer gameID, String authToken) throws ResponseException {
+        var path = "/game";
+        var request = new JoinGameRequest(teamColor, gameID);
+        this.makeRequest("PUT", path, authToken, request, null);
     }
     
     private <T> T makeRequest(String method, String path, String authToken, Object request, Class<T> responseClass) throws ResponseException {

@@ -61,8 +61,19 @@ public class ChessClient {
         return null;
     }
 
-    private String joinGame(String[] params) {
-        return null;
+    private String joinGame(String[] params) throws ResponseException {
+        assertSignedIn();
+        if (params.length >= 1) {
+            var gameID = params[0];
+            String team = null;
+            if (params.length == 2) {
+                team = params[1];
+            }
+
+            server.joinGame(team, Integer.valueOf(gameID), visitorData.authToken());
+            return String.format("Joining game #%d", gameID);
+        }
+        throw new ResponseException(400, "Expected: <ID> [WHITE|BLACK|<empty>]");
     }
 
     private String createGame(String[] params) throws ResponseException {
