@@ -15,7 +15,6 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class MySQLDataAccess implements DataAccess {
-    private Integer nextId = 0;
 
     public MySQLDataAccess() throws ResponseException {
         configureDatabase();
@@ -32,7 +31,6 @@ public class MySQLDataAccess implements DataAccess {
 
     @Override
     public void clear() throws DataAccessException {
-        nextId = 0;
         try {
             var statements = new String[]{"TRUNCATE users", "TRUNCATE authdata", "TRUNCATE games"};
             for (var statement : statements) {
