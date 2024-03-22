@@ -64,8 +64,14 @@ public class ChessClient {
         return null;
     }
 
-    private String createGame(String[] params) {
-        return null;
+    private String createGame(String[] params) throws ResponseException {
+        assertSignedIn();
+        if (params.length == 1) {
+            var gameName = params[0];
+            var result = server.createGame(gameName, visitorData.authToken());
+            return String.format("Game #%d created: %s", result.gameID(), gameName);
+        }
+        throw new ResponseException(400, "Expected: <GAMENAME>");
     }
 
     private String listGames(String[] params) {
@@ -76,7 +82,7 @@ public class ChessClient {
         assertSignedIn();
         server.logoutUser(visitorData.authToken());
         state = State.SIGNEDOUT;
-        return String.format("%s logged out.", visitorData.username());
+        return String.format("%s logged out", visitorData.username());
     }
 
     private String login(String[] params) throws ResponseException {
@@ -89,7 +95,7 @@ public class ChessClient {
             var result = server.loginUser(username, password);
             state = State.SIGNEDIN;
             visitorData = result;
-            return String.format("User logged in: %s.", result.username());
+            return String.format("Logged in as %s", result.username());
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");
     }
@@ -102,7 +108,7 @@ public class ChessClient {
             var result = server.registerUser(username, password, email);
             state = State.SIGNEDIN;
             visitorData = result;
-            return String.format("User registered: %s.", result.username());
+            return String.format("User registered: %s. Welcome to Chess!", result.username());
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
     }

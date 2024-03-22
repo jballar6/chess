@@ -92,8 +92,8 @@ public class ChessService {
                 throw new ResponseException(401, "Error: unauthorized ");
             }
             else {
-                var newGame = dataAccess.createGame(game);
-                return new CreateGameResponse(newGame.gameID());
+                var newGameID = dataAccess.createGame(game);
+                return new CreateGameResponse(newGameID.gameID());
             }
         } catch (DataAccessException e) {
             throw new ResponseException(500, "Error: " + e.getMessage());

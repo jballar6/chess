@@ -219,12 +219,26 @@ public class MySQLDataAccess implements DataAccess {
     public GameData createGame(GameData game) throws DataAccessException {
         try {
             var statement = "INSERT INTO games (name, json) VALUES (?, ?)";
-            nextId++;
-            game = game.setGameID(nextId);
+            var id = getGameCount();
+            game = game.setGameID(id);
             var json = new Gson().toJson(game);
-            var id = executeUpdate(statement, game.gameName(), json);
-            return new GameData(id, null, null, game.gameName(), null);
+            executeUpdate(statement, game.gameName(), json);
+            return game;
         } catch (ResponseException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+   private int getGameCount() throws DataAccessException {
+        try (var connection = DatabaseManager.getConnection()) {
+            var statement = "SELECT COUNT(*) FROM games";
+            try (var ps = connection.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    rs.next();
+                    return rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
             throw new DataAccessException(e.getMessage());
         }
     }

@@ -3,8 +3,10 @@ package ui;
 import com.google.gson.Gson;
 import exception.ResponseException;
 import models.AuthData;
+import models.GameData;
 import models.UserData;
 import requests.LoginRequest;
+import responses.CreateGameResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,8 +35,13 @@ public class ServerFacade {
 
     public void logoutUser(String authToken) throws ResponseException {
         var path = "/session";
-        var header = String.format("authorization: %s", authToken);
         this.makeRequest("DELETE", path, authToken, null, null);
+    }
+
+    public CreateGameResponse createGame(String gameName, String authToken) throws ResponseException {
+        var path = "/game";
+        var request = new GameData(null, null, null, gameName, null);
+        return this.makeRequest("POST", path, authToken, request, null);
     }
     
     private <T> T makeRequest(String method, String path, String authToken, Object request, Class<T> responseClass) throws ResponseException {

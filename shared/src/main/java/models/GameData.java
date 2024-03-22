@@ -1,6 +1,6 @@
 package models;
 
-public record GameData(int gameID, String whiteUsername, String blackUsername, String gameName, String game) {
+public record GameData(Integer gameID, String whiteUsername, String blackUsername, String gameName, String game) {
     public GameData setGameID(int newGameID) {
         return new GameData(newGameID, whiteUsername, blackUsername, gameName, game);
     }
